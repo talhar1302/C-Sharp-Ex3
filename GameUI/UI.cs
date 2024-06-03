@@ -156,14 +156,24 @@ namespace GameUI
                 }
 
                 (int row, int col) = ParseInput(input);
-                if (row >= 0 && col >= 0 && !board.IsRevealed(row, col))
+                if (CheckMoveValidation(board, row, col))
                 {
                     return (row, col);
                 }
-                Console.WriteLine("Invalid input or card already revealed. Try again.");
+                Console.WriteLine("Invalid input or card already revealed. Try again.\n");
             }
         }
 
+        private bool CheckMoveValidation(Board board,int row, int column)
+        {
+            int numRows = board.Rows;
+            int numCols = board.Columns;
+            if (row >= 0 && column >= 0 && row <= numRows - 1 && column <= numCols - 1)
+            {
+                return !board.IsRevealed(row, column);
+            }
+            return false;
+        }
         private (int, int) ParseInput(string input)
         {
             if (input.Length == 2 && char.IsLetter(input[0]) && char.IsDigit(input[1]))

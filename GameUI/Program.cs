@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GameLogic;
 
 namespace GameUI
 {
     class Program
     {
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
             UI ui = new UI();
-            Game game = new Game(ui);
-            game.Play();
+            GameRunner gameRunner = new GameRunner(ui);
+            gameRunner.Run();
         }
     }
-
 }

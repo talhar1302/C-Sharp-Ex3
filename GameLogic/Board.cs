@@ -9,19 +9,26 @@ namespace GameLogic
         private int rows;
         private int columns;
 
+        public int Rows { get => rows; set => rows = value; }
+        public int Columns { get => columns; set => columns = value; }
+
         public Board(int rows, int columns)
         {
-            this.rows = rows;
-            this.columns = columns;
+            this.Rows = rows;
+            this.Columns = columns;
             cards = new Card[rows, columns];
             InitializeBoard();
         }
 
+        public static bool IsValidBoard(int rows,int columns)
+        {
+            return (rows * columns) % 2 == 0;
+        }
         private void InitializeBoard()
         {
             List<char> cardValues = new List<char>();
             char value = 'A';
-            for (int i = 0; i < (rows * columns) / 2; i++)
+            for (int i = 0; i < (Rows * Columns) / 2; i++)
             {
                 cardValues.Add(value);
                 cardValues.Add(value);
@@ -29,9 +36,9 @@ namespace GameLogic
             }
 
             Random random = new Random();
-            for (int i = 0; i < rows; i++)
+            for (int i = 0; i < Rows; i++)
             {
-                for (int j = 0; j < columns; j++)
+                for (int j = 0; j < Columns; j++)
                 {
                     int index = random.Next(cardValues.Count);
                     cards[i, j] = new Card(cardValues[index]);
