@@ -140,9 +140,11 @@ namespace GameUI
         public void DisplayGameOver()
         {
             Console.WriteLine("Game over. Thank you for playing!");
+            Console.WriteLine("Press enter to exit");
+            Console.ReadLine();
         }
 
-        public (int, int) GetUserMove(Board<char> board)
+        public (int, int) GetUserMove(Game<char> game)
         {
             while (true)
             {
@@ -154,7 +156,7 @@ namespace GameUI
                 }
 
                 (int row, int col) = ParseInput(input);
-                if (CheckMoveValidation(board, row, col))
+                if (CheckMoveValidation(game, row, col))
                 {
                     return (row, col);
                 }
@@ -162,15 +164,10 @@ namespace GameUI
             }
         }
 
-        private bool CheckMoveValidation(Board<char> board, int row, int column)
+        private bool CheckMoveValidation(Game<char>i_game, int i_row, int i_column)
         {
-            int numRows = board.Rows;
-            int numCols = board.Columns;
-            if (row >= 0 && column >= 0 && row <= numRows - 1 && column <= numCols - 1)
-            {
-                return !board.IsRevealed(row, column);
-            }
-            return false;
+            Board<char> board = i_game.GetBoard();
+            return i_game.CheckMoveValidation(i_row, i_column);
         }
         private (int, int) ParseInput(string input)
         {
@@ -194,6 +191,39 @@ namespace GameUI
                 value++;
             }
             return cardValues;
+        }
+
+        public (int, int) GetMove(Game<char> game)
+        {
+            if (game.GetCurrentPlayer() is ComputerPlayer<char>)
+            {
+                return game.GetComputerMove();
+            }
+            return GetUserMove(game);
+        }
+
+        public void DisplayBoardAndCard(Game<char> game, int row, int col, string cardOrder)
+        {
+            ClearScreen();
+            PrintBoard(game.GetBoard(), revealAll: false);
+            Player currentPlayer = game.GetCurrentPlayer();
+            DisplayTurn(currentPlayer);
+            DisplayCard(game.GetBoard().GetCards()[row, col].Value, cardOrder);
+            if(game.GetCurrentPlayer() is ComputerPlayer<char>)
+            System.Threading.Thread.Sleep(2000); // Wait for 2 seconds
+        }
+
+        public void DisplayWinnerOrTie(Game<char> game)
+        {
+            Player winner = game.DetermineWinner();
+            if (winner != null)
+            {
+                DisplayWinner(winner);
+            }
+            else
+            {
+                DisplayTie();
+            }
         }
     }
 }

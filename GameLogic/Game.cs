@@ -1,22 +1,26 @@
-﻿using GameLogic;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace GameUI
+namespace GameLogic
 {
     public class Game<T>
     {
         private Board<T> board;
-        private Player player1;
-        private Player player2;
-        private Player currentPlayer;
+        private List<Player> players;
+        private int currentPlayerIndex;
 
-        public Game(int rows, int columns, string player1Name, string player2Name, List<T> cardValues)
+        public Game(int rows, int columns, List<string> playerNames, List<T> cardValues)
         {
             board = new Board<T>(rows, columns, cardValues);
-            player1 = new Player(player1Name);
-            player2 = player2Name == "Computer" ? (Player)new ComputerPlayer<T>(player2Name) : new Player(player2Name);
-            currentPlayer = player1;
+            players = new List<Player>();
+
+            foreach (var name in playerNames)
+            {
+                players.Add(name == "Computer" ? (Player)new ComputerPlayer<T>(name) : new Player(name));
+            }
+
+            currentPlayerIndex = 0;
         }
 
         public Board<T> GetBoard()
@@ -26,7 +30,7 @@ namespace GameUI
 
         public Player GetCurrentPlayer()
         {
-            return currentPlayer;
+            return players[currentPlayerIndex];
         }
 
         public void RevealCard(int row, int col)
@@ -45,6 +49,15 @@ namespace GameUI
             return board.AllCardsRevealed();
         }
 
+        public bool CheckMoveValidation(int row, int col)
+        {
+            if (row >= 0 && col >= 0 && row <= board.Rows - 1 && col <= board.Columns - 1)
+            {
+                return !board.IsRevealed(row, col);
+            }
+            return false;
+        }
+
         public bool CheckMatch(int row1, int col1, int row2, int col2)
         {
             return board.GetCards()[row1, col1].Value.Equals(board.GetCards()[row2, col2].Value);
@@ -52,25 +65,17 @@ namespace GameUI
 
         public void SwitchPlayer()
         {
-            currentPlayer = currentPlayer == player1 ? player2 : player1;
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
         }
 
         public Player DetermineWinner()
         {
-            if (player1.Score > player2.Score)
-            {
-                return player1;
-            }
-            else if (player2.Score > player1.Score)
-            {
-                return player2;
-            }
-            return null; // It's a tie
+            return players.OrderByDescending(p => p.Score).FirstOrDefault();
         }
 
         public (int, int) GetComputerMove()
         {
-            if (currentPlayer is ComputerPlayer<T> computerPlayer)
+            if (GetCurrentPlayer() is ComputerPlayer<T> computerPlayer)
             {
                 return computerPlayer.GetRandomMove(board);
             }
