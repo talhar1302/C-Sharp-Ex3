@@ -17,7 +17,7 @@ namespace GameLogic
 
             foreach (var name in playerNames)
             {
-                players.Add(name == "Computer" ? (Player)new ComputerPlayer<T>(name) : new Player(name));
+                players.Add(name == "Computer" ? (Player)new AIComputerPlayer<T>(name) : new Player(name));
             }
 
             currentPlayerIndex = 0;
@@ -77,7 +77,7 @@ namespace GameLogic
         {
             if (GetCurrentPlayer() is ComputerPlayer<T> computerPlayer)
             {
-                return computerPlayer.GetRandomMove(board);
+                return computerPlayer.GetMove(board);
             }
             throw new InvalidOperationException("Current player is not a computer player.");
         }

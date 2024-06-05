@@ -28,12 +28,12 @@ namespace GameLogic
         private void InitializeBoard(List<T> cardValues)
         {
             Random random = new Random();
-            for (int i = 0; i < Rows; i++)
+            for (int row = 0; row < Rows; row++)
             {
-                for (int j = 0; j < Columns; j++)
+                for (int col = 0; col < Columns; col++)
                 {
                     int index = random.Next(cardValues.Count);
-                    cards[i, j] = new Card<T>(cardValues[index]);
+                    cards[row, col] = new Card<T>(row, col, cardValues[index]);
                     cardValues.RemoveAt(index);
                 }
             }
