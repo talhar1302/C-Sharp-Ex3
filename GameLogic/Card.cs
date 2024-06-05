@@ -1,11 +1,15 @@
 ﻿namespace GameLogic
 {
-    public class Card
+    public class Card<T>
     {
-        public char Value { get; }
+        public enum CardType
+        {
+            CHAR
+        }
+        public T Value { get; }
         public bool IsRevealed { get; set; }
 
-        public Card(char value)
+        public Card(T value)
         {
             Value = value;
             IsRevealed = false;

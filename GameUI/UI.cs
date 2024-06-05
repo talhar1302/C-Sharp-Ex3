@@ -13,9 +13,7 @@ namespace GameUI
     {
         public void ClearScreen()
         {
-            // Placeholder for Ex02.ConsoleUtils.Screen.Clear();
             Screen.Clear();
-            //Console.Clear();
         }
 
         public string GetPlayerName(string prompt)
@@ -40,7 +38,7 @@ namespace GameUI
                 Console.Write("Enter the number of columns (4,5,6): ");
                 columns = int.Parse(Console.ReadLine());
 
-                if ((rows >= 4 && rows <= 6) && (columns >= 4 && columns <= 6) && Board.IsValidBoard(rows, columns))
+                if ((rows >= 4 && rows <= 6) && (columns >= 4 && columns <= 6) && Board<char>.IsValidBoard(rows, columns))
                 {
                     break;
                 }
@@ -52,9 +50,9 @@ namespace GameUI
             return (rows, columns);
         }
 
-        public void PrintBoard(Board board, bool revealAll = false)
+        public void PrintBoard(Board<char> board, bool revealAll = false)
         {
-            Card[,] cards = board.GetCards();
+            Card<char>[,] cards = board.GetCards();
             int rows = cards.GetLength(0);
             int columns = cards.GetLength(1);
 
@@ -144,7 +142,7 @@ namespace GameUI
             Console.WriteLine("Game over. Thank you for playing!");
         }
 
-        public (int, int) GetUserMove(Board board)
+        public (int, int) GetUserMove(Board<char> board)
         {
             while (true)
             {
@@ -164,7 +162,7 @@ namespace GameUI
             }
         }
 
-        private bool CheckMoveValidation(Board board,int row, int column)
+        private bool CheckMoveValidation(Board<char> board, int row, int column)
         {
             int numRows = board.Rows;
             int numCols = board.Columns;
@@ -184,6 +182,18 @@ namespace GameUI
             }
             return (-1, -1);
         }
-    }
 
+        public List<char> GenerateCharacterList(int rows, int columns)
+        {
+            List<char> cardValues = new List<char>();
+            char value = 'A';
+            for (int i = 0; i < (rows * columns) / 2; i++)
+            {
+                cardValues.Add(value);
+                cardValues.Add(value);
+                value++;
+            }
+            return cardValues;
+        }
+    }
 }

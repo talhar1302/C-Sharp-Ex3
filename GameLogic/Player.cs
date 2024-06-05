@@ -17,7 +17,7 @@ namespace GameLogic
             Score = 0;
         }
 
-        public void IncrementScore()
+        public void IncreaseScore()
         {
             Score++;
         }

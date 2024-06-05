@@ -3,45 +3,37 @@ using System.Collections.Generic;
 
 namespace GameLogic
 {
-    public class Board
+    public class Board<T>
     {
-        private Card[,] cards;
+        private Card<T>[,] cards;
         private int rows;
         private int columns;
 
         public int Rows { get => rows; set => rows = value; }
         public int Columns { get => columns; set => columns = value; }
 
-        public Board(int rows, int columns)
+        public Board(int rows, int columns, List<T> cardValues)
         {
             this.Rows = rows;
             this.Columns = columns;
-            cards = new Card[rows, columns];
-            InitializeBoard();
+            cards = new Card<T>[rows, columns];
+            InitializeBoard(cardValues);
         }
 
-        public static bool IsValidBoard(int rows,int columns)
+        public static bool IsValidBoard(int rows, int columns)
         {
             return (rows * columns) % 2 == 0;
         }
-        private void InitializeBoard()
-        {
-            List<char> cardValues = new List<char>();
-            char value = 'A';
-            for (int i = 0; i < (Rows * Columns) / 2; i++)
-            {
-                cardValues.Add(value);
-                cardValues.Add(value);
-                value++;
-            }
 
+        private void InitializeBoard(List<T> cardValues)
+        {
             Random random = new Random();
             for (int i = 0; i < Rows; i++)
             {
                 for (int j = 0; j < Columns; j++)
                 {
                     int index = random.Next(cardValues.Count);
-                    cards[i, j] = new Card(cardValues[index]);
+                    cards[i, j] = new Card<T>(cardValues[index]);
                     cardValues.RemoveAt(index);
                 }
             }
@@ -52,7 +44,7 @@ namespace GameLogic
             return cards[row, col].IsRevealed;
         }
 
-        public char RevealCard(int row, int col)
+        public T RevealCard(int row, int col)
         {
             cards[row, col].IsRevealed = true;
             return cards[row, col].Value;
@@ -72,7 +64,7 @@ namespace GameLogic
             return true;
         }
 
-        public Card[,] GetCards()
+        public Card<T>[,] GetCards()
         {
             return cards;
         }

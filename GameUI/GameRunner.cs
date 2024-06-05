@@ -1,6 +1,10 @@
 ﻿using GameLogic;
+using System;
+using System.Collections.Generic;
+
 namespace GameUI
 {
+    using GameLogic;
     public class GameRunner
     {
         private UI ui;
@@ -15,64 +19,91 @@ namespace GameUI
             int rows, columns;
             (rows, columns) = ui.GetBoardSize();
             string player1Name = ui.GetPlayerName("Enter player 1 name: ");
-            string player2Name = null;
+            string player2Name = "Computer";
+            Player currentPlayer;
             if (ui.GetYesNoInput("Is this a two-player game? (yes/no): "))
             {
                 player2Name = ui.GetPlayerName("Enter player 2 name: ");
             }
 
-            GameLogic.Game game = new GameLogic.Game(rows, columns, player1Name, player2Name);
+            List<char> cardValues = ui.GenerateCharacterList(rows, columns);
+
+            Game<char> game = new Game<char>(rows, columns, player1Name, player2Name, cardValues);
             while (!game.AllCardsRevealed())
             {
                 ui.ClearScreen();
                 ui.PrintBoard(game.GetBoard());
-                ui.DisplayTurn(game.GetCurrentPlayer());
-                (int row1, int col1) = ui.GetUserMove(game.GetBoard());
-                game.RevealCard(row1, col1);
-                ui.ClearScreen();
-                ui.PrintBoard(game.GetBoard(), revealAll: false);
-                ui.DisplayCard(game.GetBoard().GetCards()[row1, col1].Value, "First");
-                (int row2, int col2) = ui.GetUserMove(game.GetBoard());
-                game.RevealCard(row2, col2);
-                ui.ClearScreen();
-                ui.PrintBoard(game.GetBoard(), revealAll: false);
-                ui.DisplayCards(game.GetBoard().GetCards()[row1, col1].Value, game.GetBoard().GetCards()[row2, col2].Value);
+                currentPlayer = game.GetCurrentPlayer();
+                ui.DisplayTurn(currentPlayer);
+
+                int row1,col1;
+                int row2,col2;
+
+                if (game.GetCurrentPlayer() is ComputerPlayer<char>)
+                {
+                    // Computer player turn
+                    (row1, col1) = game.GetComputerMove();
+                    game.RevealCard(row1, col1);
+                    ui.ClearScreen();
+                    ui.PrintBoard(game.GetBoard(), revealAll: false);
+                    ui.DisplayTurn(currentPlayer);
+                    ui.DisplayCard(game.GetBoard().GetCards()[row1, col1].Value, "First");
+
+                    System.Threading.Thread.Sleep(2000); // Wait for 2 seconds
+
+                    (row2, col2) = game.GetComputerMove();
+                    game.RevealCard(row2, col2);
+                    ui.ClearScreen();
+                    ui.PrintBoard(game.GetBoard(), revealAll: false);
+                    ui.DisplayTurn(currentPlayer);
+                    ui.DisplayCard(game.GetBoard().GetCards()[row2, col2].Value, "Second");
+
+                    System.Threading.Thread.Sleep(2000); // Wait for 2 seconds
+                }
+                else
+                {
+                    // Human player turn
+                    (row1, col1) = ui.GetUserMove(game.GetBoard());
+                    game.RevealCard(row1, col1);
+                    ui.ClearScreen();
+                    ui.PrintBoard(game.GetBoard(), revealAll: false);
+                    ui.DisplayTurn(currentPlayer);
+                    ui.DisplayCard(game.GetBoard().GetCards()[row1, col1].Value, "First");
+
+                    (row2, col2) = ui.GetUserMove(game.GetBoard());
+                    game.RevealCard(row2, col2);
+                    ui.ClearScreen();
+                    ui.PrintBoard(game.GetBoard(), revealAll: false);
+                    ui.DisplayTurn(currentPlayer);
+                    ui.DisplayCard(game.GetBoard().GetCards()[row2, col2].Value, "Second");
+                }
+
                 if (game.CheckMatch(row1, col1, row2, col2))
                 {
-                    game.IncrementCurrentPlayerScore();
                     ui.DisplayMatch();
+                    currentPlayer.IncreaseScore();
                 }
                 else
                 {
-                    System.Threading.Thread.Sleep(2000); // Wait for 2 seconds
-                    ui.ClearScreen();
-                    game.HideCards(row1, col1, row2, col2);
-                    ui.PrintBoard(game.GetBoard());
                     ui.DisplayNoMatch();
+                    System.Threading.Thread.Sleep(2000); // Wait for 2 seconds
+                    game.HideCards(row1, col1, row2, col2);
+                    ui.ClearScreen();
+                    game.SwitchPlayer();
                 }
-                game.NextPlayer();
             }
 
-            ui.DisplayGameOver();
-            if (player2Name != null)
+            Player winner = game.DetermineWinner();
+            if (winner != null)
             {
-                if (game.GetPlayer1().Score > game.GetPlayer2().Score)
-                {
-                    ui.DisplayWinner(game.GetPlayer1());
-                }
-                else if (game.GetPlayer1().Score < game.GetPlayer2().Score)
-                {
-                    ui.DisplayWinner(game.GetPlayer2());
-                }
-                else
-                {
-                    ui.DisplayTie();
-                }
+                ui.DisplayWinner(winner);
             }
             else
             {
-                ui.DisplayWinner(game.GetPlayer1());
+                ui.DisplayTie();
             }
+
+            ui.DisplayGameOver();
         }
     }
 }
