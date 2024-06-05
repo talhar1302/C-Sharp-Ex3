@@ -26,11 +26,11 @@ namespace GameLogic
                     if (exposedCards[i].Value.Equals(exposedCards[j].Value))
                     {
                         if (!m_isCardSaved && !board.IsRevealed(row, column))
-                        { 
-                        m_savedCardForMatch = exposedCards[i];
-                        returnedRow = m_savedCardForMatch.Row;
-                        returnedColumn = m_savedCardForMatch.Column;
-                        m_isCardSaved = true;
+                        {
+                            m_savedCardForMatch = exposedCards[i];
+                            returnedRow = m_savedCardForMatch.Row;
+                            returnedColumn = m_savedCardForMatch.Column;
+                            m_isCardSaved = true;
                             return (returnedRow, returnedColumn);
                         }
                         else
@@ -38,13 +38,13 @@ namespace GameLogic
                             row = exposedCards[j].Row;
                             column = exposedCards[j].Column;
                             if (!board.IsRevealed(row, column))
-                            { 
-                            m_savedCardForMatch = exposedCards[j];
-                            returnedRow = m_savedCardForMatch.Row;
-                            returnedColumn = m_savedCardForMatch.Column;
-                            m_isCardSaved = false;                        
-                            exposedCards.Remove(exposedCards[i]);
-                            exposedCards.Remove(exposedCards[j]);
+                            {
+                                m_savedCardForMatch = exposedCards[j];
+                                returnedRow = m_savedCardForMatch.Row;
+                                returnedColumn = m_savedCardForMatch.Column;
+                                m_isCardSaved = false;
+                                exposedCards.Remove(exposedCards[j]);
+                                exposedCards.Remove(exposedCards[i]);
                                 return (returnedRow, returnedColumn);
                             }
                         }

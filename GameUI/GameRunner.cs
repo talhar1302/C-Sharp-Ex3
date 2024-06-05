@@ -59,7 +59,7 @@ namespace GameUI
                     game.SwitchPlayer();
                 }
             }
-
+            //TODO: Update printing before winning
             ui.DisplayWinnerOrTie(game);
             ui.DisplayGameOver();
         }
