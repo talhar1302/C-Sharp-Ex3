@@ -41,14 +41,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameRunner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="UI.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GameLogic\GameLogic.csproj">
+    <ProjectReference Include="..\Ex03.GarageLogic\Ex03.GarageLogic.csproj">
       <Project>{ba317d05-ca0b-4a74-bd29-f0905795953b}</Project>
-      <Name>GameLogic</Name>
+      <Name>Ex03.GarageLogic</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
