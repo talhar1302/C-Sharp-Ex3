@@ -1,189 +1,385 @@
-﻿using System;
+﻿using Ex03.GarageLogic;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.ConstrainedExecution;
 
-namespace GameUI
+namespace Ex03.ConsoleUI
 {
-    using GameLogic;
-    using System;
-    using Ex02.ConsoleUtils;
     public class UI
     {
-        public void ClearScreen()
-        {
-            // Placeholder for Ex02.ConsoleUtils.Screen.Clear();
-            Screen.Clear();
-            //Console.Clear();
-        }
+        private Garage garage = new Garage();
 
-        public string GetPlayerName(string prompt)
+        public void Run()
         {
-            Console.Write(prompt);
-            return Console.ReadLine();
-        }
+            bool exit = false;
 
-        public bool GetYesNoInput(string prompt)
-        {
-            Console.Write(prompt);
-            return Console.ReadLine().ToLower() == "yes";
-        }
-
-        public (int, int) GetBoardSize()
-        {
-            int rows, columns;
-            while (true)
+            while (!exit)
             {
-                Console.Write("Enter the number of rows (4,5,6): ");
-                rows = int.Parse(Console.ReadLine());
-                Console.Write("Enter the number of columns (4,5,6): ");
-                columns = int.Parse(Console.ReadLine());
+                Console.Clear();
+                Console.WriteLine("Garage Management System");
+                Console.WriteLine("1. Add a new vehicle");
+                Console.WriteLine("2. Show vehicle list");
+                Console.WriteLine("3. Change vehicle status");
+                Console.WriteLine("4. Inflate vehicle wheels to max");
+                Console.WriteLine("5. Refuel a vehicle");
+                Console.WriteLine("6. Charge a vehicle");
+                Console.WriteLine("7. Display vehicle details");
+                Console.WriteLine("8. Exit");
 
-                if ((rows >= 4 && rows <= 6) && (columns >= 4 && columns <= 6) && Board.IsValidBoard(rows, columns))
+                string choice = Console.ReadLine();
+
+                try
                 {
+                    switch (choice)
+                    {
+                        case "1":
+                            AddVehicle();
+                            break;
+                        case "2":
+                            ShowVehicleList();
+                            break;
+                        case "3":
+                            ChangeVehicleStatus();
+                            break;
+                        case "4":
+                            InflateWheelsToMax();
+                            break;
+                        case "5":
+                            RefuelVehicle();
+                            break;
+                        case "6":
+                            ChargeVehicle();
+                            break;
+                        case "7":
+                            DisplayVehicleDetails();
+                            break;
+                        case "8":
+                            exit = true;
+                            break;
+                        default:
+                            Console.WriteLine("Invalid choice. Press any key to continue...");
+                            Console.ReadKey();
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                }
+            }
+        }
+
+        private void AddVehicle()
+        {
+            Console.WriteLine("Enter vehicle license number:");
+            string licenseNumber = Console.ReadLine();
+
+            if (garage.GetVehicleLicenseNumbers().Contains(licenseNumber))
+            {
+                garage.ChangeVehicleStatus(licenseNumber, eVehicleStatus.UnderRepair);
+                Console.WriteLine("Vehicle already exists. Status changed to 'Under Repair'.");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("Select vehicle type:");
+            Console.WriteLine("1. Regular Motorcycle");
+            Console.WriteLine("2. Electric Motorcycle");
+            Console.WriteLine("3. Regular Car");
+            Console.WriteLine("4. Electric Car");
+            Console.WriteLine("5. Truck");
+            string vehicleTypeChoice = Console.ReadLine();
+
+            Console.WriteLine("Enter model name:");
+            string modelName = Console.ReadLine();
+
+            Console.WriteLine("Enter owner's name:");
+            string ownerName = Console.ReadLine();
+
+            Console.WriteLine("Enter owner's phone:");
+            string ownerPhone = Console.ReadLine();
+
+            Console.WriteLine("Enter energy percentage:");
+            float energyPercentage = float.Parse(Console.ReadLine());
+
+            List<Wheel> wheels = new List<Wheel>();
+            Console.WriteLine("Enter wheel manufacturer name:");
+            string wheelManufacturer = Console.ReadLine();
+
+            Console.WriteLine("Enter current air pressure:");
+            float currentAirPressure = float.Parse(Console.ReadLine());
+
+            float maxAirPressure;
+            int numberOfWheels;
+            switch (vehicleTypeChoice)
+            {
+                case "1":
+                    maxAirPressure = 33;
+                    numberOfWheels = 2;
                     break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid board size. Please try again.");
-                }
+                case "2":
+                    maxAirPressure = 33;
+                    numberOfWheels = 2;
+                    break;
+                case "3":
+                    maxAirPressure = 31;
+                    numberOfWheels = 5;
+                    break;
+                case "4":
+                    maxAirPressure = 31;
+                    numberOfWheels = 5;
+                    break;
+                case "5":
+                    maxAirPressure = 28;
+                    numberOfWheels = 12;
+                    break;
+                default:
+                    throw new ArgumentException("Invalid vehicle type.");
             }
-            return (rows, columns);
-        }
 
-        public void PrintBoard(Board board, bool revealAll = false)
-        {
-            Card[,] cards = board.GetCards();
-            int rows = cards.GetLength(0);
-            int columns = cards.GetLength(1);
-
-            // Print the column headers
-            Console.Write("  ");
-            for (int c = 0; c < columns; c++)
+            for (int i = 0; i < numberOfWheels; i++)
             {
-                Console.Write((char)('A' + c) + " ");
+                wheels.Add(new Wheel(wheelManufacturer, currentAirPressure, maxAirPressure));
             }
-            Console.WriteLine();
 
-            // Print the top border
-            Console.Write(" ");
-            for (int c = 0; c < columns; c++)
+            Vehicle vehicle;
+            switch (vehicleTypeChoice)
             {
-                Console.Write("==");
-            }
-            Console.Write("=");
-            Console.WriteLine();
+                case "1":
+                    Console.WriteLine("Enter fuel type (Octan98):");
+                    eFuelType fuelType = (eFuelType)Enum.Parse(typeof(eFuelType), Console.ReadLine(), true);
 
-            // Print the board rows
-            for (int i = 0; i < rows; i++)
+                    Console.WriteLine("Enter current fuel amount:");
+                    float currentFuelAmount = float.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Enter max fuel amount:");
+                    float maxFuelAmount = float.Parse(Console.ReadLine());
+                    Console.WriteLine("Enter license type (A, A1, AA, B1):");
+                    eLicenseType licenseType = (eLicenseType)Enum.Parse(typeof(eLicenseType), Console.ReadLine(), true);
+                    Console.WriteLine("Enter engine volume:");
+                    int engineVolume = int.Parse(Console.ReadLine());
+
+                    vehicle = new RegularMotorcycle(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, fuelType, currentFuelAmount, maxFuelAmount, licenseType, engineVolume);
+                    break;
+
+                case "2":
+                    Console.WriteLine("Enter battery time remaining:");
+                    float batteryTimeRemaining = float.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Enter max battery time:");
+                    float maxBatteryTime = float.Parse(Console.ReadLine());
+                    Console.WriteLine("Enter license type (A, A1, AA, B1):");
+                    licenseType = (eLicenseType)Enum.Parse(typeof(eLicenseType), Console.ReadLine(), true);
+
+                    Console.WriteLine("Enter engine volume:");
+                    engineVolume = int.Parse(Console.ReadLine());
+
+                    vehicle = new ElectricMotorcycle(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, batteryTimeRemaining, maxBatteryTime, licenseType, engineVolume);
+                    break;
+
+                case "3":
+                    Console.WriteLine("Enter fuel type (Octan95):");
+                    fuelType = (eFuelType)Enum.Parse(typeof(eFuelType), Console.ReadLine(), true);
+
+                    Console.WriteLine("Enter current fuel amount:");
+                    currentFuelAmount = float.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Enter max fuel amount:");
+                    maxFuelAmount = float.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Enter car color (Yellow, White, Red, Black):");
+                    CarColor color = (CarColor)Enum.Parse(typeof(CarColor), Console.ReadLine(), true);
+
+                    Console.WriteLine("Enter number of doors (2, 3, 4, 5):");
+                    int numberOfDoors = int.Parse(Console.ReadLine());
+
+                    vehicle = new RegularCar(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, fuelType, currentFuelAmount, maxFuelAmount, color, numberOfDoors);
+                    break;
+
+                case "4":
+                    Console.WriteLine("Enter battery time remaining:");
+                    batteryTimeRemaining = float.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Enter max battery time:");
+                    maxBatteryTime = float.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Enter car color (Yellow, White, Red, Black):");
+                    color = (CarColor)Enum.Parse(typeof(CarColor), Console.ReadLine(), true);
+
+                    Console.WriteLine("Enter number of doors (2, 3, 4, 5):");
+                    numberOfDoors = int.Parse(Console.ReadLine());
+
+                    vehicle = new ElectricCar(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, batteryTimeRemaining, maxBatteryTime, color, numberOfDoors);
+                    break;
+
+                case "5":
+                    Console.WriteLine("Enter fuel type (Soler):");
+                    fuelType = (eFuelType)Enum.Parse(typeof(eFuelType), Console.ReadLine(), true);
+
+                    Console.WriteLine("Enter current fuel amount:");
+                    currentFuelAmount = float.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Enter max fuel amount:");
+                    maxFuelAmount = float.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Does it transport hazardous materials? (true/false):");
+                    bool transportsHazardousMaterials = bool.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Enter cargo volume:");
+                    float cargoVolume = float.Parse(Console.ReadLine());
+
+                    vehicle = new Truck(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, fuelType, currentFuelAmount, maxFuelAmount, transportsHazardousMaterials, cargoVolume);
+                    break;
+
+                default:
+                    throw new ArgumentException("Invalid vehicle type.");
+            }
+
+            garage.AddVehicle(vehicle);
+            Console.WriteLine("Vehicle added successfully. Press any key to continue...");
+            Console.ReadKey();
+        }
+
+        private void ShowVehicleList()
+        {
+            Console.WriteLine("Show vehicles by status? (yes/no):");
+            string showByStatus = Console.ReadLine().ToLower();
+
+            List<string> licenseNumbers;
+            if (showByStatus == "yes")
             {
-                Console.Write((i + 1).ToString() + "|");
-                for (int j = 0; j < columns; j++)
-                {
-                    if (cards[i, j].IsRevealed || revealAll)
-                    {
-                        Console.Write(cards[i, j].Value);
-                    }
-                    else
-                    {
-                        Console.Write(" ");
-                    }
-                    Console.Write("|");
-                }
-                Console.WriteLine();
-                // Print the top border
-                Console.Write(" ");
-                for (int c = 0; c < columns; c++)
-                {
-                    Console.Write("==");
-                }
-                Console.Write("=");
-                Console.WriteLine();
+                Console.WriteLine("Enter status (UnderRepair, Repaired, Paid):");
+                eVehicleStatus status = (eVehicleStatus)Enum.Parse(typeof(eVehicleStatus), Console.ReadLine(), true);
+                licenseNumbers = garage.GetVehicleLicenseNumbers(status);
             }
-        }
-
-
-        public void DisplayTurn(Player player)
-        {
-            Console.WriteLine($"{player.Name}'s turn. Score: {player.Score}");
-        }
-
-        public void DisplayCard(char card, string cardOrder)
-        {
-            Console.WriteLine($"{cardOrder} card: {card}");
-        }
-
-        public void DisplayCards(char firstCard, char secondCard)
-        {
-            Console.WriteLine($"First card: {firstCard}, Second card: {secondCard}");
-        }
-
-        public void DisplayMatch()
-        {
-            Console.WriteLine("It's a match! You get another turn.");
-        }
-
-        public void DisplayNoMatch()
-        {
-            Console.WriteLine("Not a match.");
-        }
-
-        public void DisplayWinner(Player player)
-        {
-            Console.WriteLine($"{player.Name} wins with {player.Score} points!");
-        }
-
-        public void DisplayTie()
-        {
-            Console.WriteLine("It's a tie!");
-        }
-
-        public void DisplayGameOver()
-        {
-            Console.WriteLine("Game over. Thank you for playing!");
-        }
-
-        public (int, int) GetUserMove(Board board)
-        {
-            while (true)
+            else
             {
-                Console.Write("Enter a card to reveal (e.g., A1 or Q to quit): ");
-                string input = Console.ReadLine();
-                if (input.ToUpper() == "Q")
-                {
-                    Environment.Exit(0);
-                }
-
-                (int row, int col) = ParseInput(input);
-                if (CheckMoveValidation(board, row, col))
-                {
-                    return (row, col);
-                }
-                Console.WriteLine("Invalid input or card already revealed. Try again.\n");
+                licenseNumbers = garage.GetVehicleLicenseNumbers();
             }
+
+            Console.WriteLine("Vehicle License Numbers:");
+            foreach (var licenseNumber in licenseNumbers)
+            {
+                Console.WriteLine(licenseNumber);
+            }
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
 
-        private bool CheckMoveValidation(Board board,int row, int column)
+        private void ChangeVehicleStatus()
         {
-            int numRows = board.Rows;
-            int numCols = board.Columns;
-            if (row >= 0 && column >= 0 && row <= numRows - 1 && column <= numCols - 1)
-            {
-                return !board.IsRevealed(row, column);
-            }
-            return false;
+            Console.WriteLine("Enter vehicle license number:");
+            string licenseNumber = Console.ReadLine();
+
+            Console.WriteLine("Enter new status (UnderRepair, Repaired, Paid):");
+            eVehicleStatus newStatus = (eVehicleStatus)Enum.Parse(typeof(eVehicleStatus), Console.ReadLine(), true);
+
+            garage.ChangeVehicleStatus(licenseNumber, newStatus);
+            Console.WriteLine("Vehicle status changed successfully. Press any key to continue...");
+            Console.ReadKey();
         }
-        private (int, int) ParseInput(string input)
+
+        private void InflateWheelsToMax()
         {
-            if (input.Length == 2 && char.IsLetter(input[0]) && char.IsDigit(input[1]))
+            Console.WriteLine("Enter vehicle license number:");
+            string licenseNumber = Console.ReadLine();
+
+            garage.InflateWheelsToMax(licenseNumber);
+            Console.WriteLine("Wheels inflated to max successfully. Press any key to continue...");
+            Console.ReadKey();
+        }
+
+        private void RefuelVehicle()
+        {
+            Console.WriteLine("Enter vehicle license number:");
+            string licenseNumber = Console.ReadLine();
+
+            Console.WriteLine("Enter fuel type (Octan95, Octan96, Octan98, Soler):");
+            eFuelType fuelType = (eFuelType)Enum.Parse(typeof(eFuelType), Console.ReadLine(), true);
+            Console.WriteLine("Enter amount to refuel:");
+            float amount = float.Parse(Console.ReadLine());
+
+            garage.RefuelVehicle(licenseNumber, fuelType, amount);
+            Console.WriteLine("Vehicle refueled successfully. Press any key to continue...");
+            Console.ReadKey();
+        }
+
+        private void ChargeVehicle()
+        {
+            Console.WriteLine("Enter vehicle license number:");
+            string licenseNumber = Console.ReadLine();
+
+            Console.WriteLine("Enter amount of hours to charge:");
+            float hours = float.Parse(Console.ReadLine());
+
+            garage.ChargeVehicle(licenseNumber, hours);
+            Console.WriteLine("Vehicle charged successfully. Press any key to continue...");
+            Console.ReadKey();
+        }
+
+        private void DisplayVehicleDetails()
+        {
+            Console.WriteLine("Enter vehicle license number:");
+            string licenseNumber = Console.ReadLine();
+
+            Vehicle vehicle = garage.GetVehicle(licenseNumber);
+
+            Console.WriteLine("Vehicle Details:");
+            Console.WriteLine($"License Number: {vehicle.LicenseNumber}");
+            Console.WriteLine($"Model Name: {vehicle.ModelName}");
+            Console.WriteLine($"Owner Name: {vehicle.OwnerName}");
+            Console.WriteLine($"Owner Phone: {vehicle.OwnerPhone}");
+            Console.WriteLine($"Status: {vehicle.Status}");
+            Console.WriteLine($"Energy Percentage: {vehicle.EnergyPercentage}%");
+            Console.WriteLine("Wheels:");
+            foreach (var wheel in vehicle.Wheels)
             {
-                int col = char.ToUpper(input[0]) - 'A';
-                int row = int.Parse(input[1].ToString()) - 1;
-                return (row, col);
+                Console.WriteLine($"Manufacturer: {wheel.ManufacturerName}, Current Pressure: {wheel.CurrentAirPressure}, Max Pressure: {wheel.MaxAirPressure}");
             }
-            return (-1, -1);
+
+            if (vehicle is FuelVehicle fuelVehicle)
+            {
+                Console.WriteLine($"Fuel Type: {fuelVehicle.FuelType}");
+                Console.WriteLine($"Current Fuel Amount: {fuelVehicle.CurrentFuelAmount}L");
+                Console.WriteLine($"Max Fuel Amount: {fuelVehicle.MaxFuelAmount}L");
+            }
+            else if (vehicle is ElectricVehicle electricVehicle)
+            {
+                Console.WriteLine($"Battery Time Remaining: {electricVehicle.BatteryTimeRemaining} hours");
+                Console.WriteLine($"Max Battery Time: {electricVehicle.MaxBatteryTime} hours");
+            }
+
+            if (vehicle is RegularCar regularCar)
+            {
+                Console.WriteLine($"Color: {regularCar.Color}");
+                Console.WriteLine($"Number of Doors: {regularCar.NumberOfDoors}");
+            }
+            else if (vehicle is ElectricCar electricCar)
+            {
+                Console.WriteLine($"Color: {electricCar.Color}");
+                Console.WriteLine($"Number of Doors: {electricCar.NumberOfDoors}");
+            }
+            else if (vehicle is RegularMotorcycle regularMotorcycle)
+            {
+                Console.WriteLine($"License Type: {regularMotorcycle.LicenseType}");
+                Console.WriteLine($"Engine Volume: {regularMotorcycle.EngineVolume}cc");
+            }
+            else if (vehicle is ElectricMotorcycle electricMotorcycle)
+            {
+                Console.WriteLine($"License Type: {electricMotorcycle.LicenseType}");
+                Console.WriteLine($"Engine Volume: {electricMotorcycle.EngineVolume}cc");
+            }           
+            else if (vehicle is Truck truck)
+            {
+                Console.WriteLine($"Transports Hazardous Materials: {truck.IsTransportsHazardousMaterials}");
+                Console.WriteLine($"Cargo Volume: {truck.CargoVolume}");
+            }
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
     }
-
 }

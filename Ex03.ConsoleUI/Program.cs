@@ -1,14 +1,15 @@
-﻿using GameLogic;
+﻿using Ex03.GarageLogic;
+using System.Collections.Generic;
+using System;
 
-namespace GameUI
+namespace Ex03.ConsoleUI
 {
     class Program
     {
         static void Main(string[] args)
         {
             UI ui = new UI();
-            GameRunner gameRunner = new GameRunner(ui);
-            gameRunner.Run();
+            ui.Run();
         }
     }
 }
