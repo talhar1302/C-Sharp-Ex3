@@ -70,177 +70,113 @@ namespace Ex03.ConsoleUI
                 }
             }
         }
-
         private void AddVehicle()
         {
             Console.WriteLine("Enter vehicle license number:");
             string licenseNumber = Console.ReadLine();
 
-            if (garage.GetVehicleLicenseNumbers().Contains(licenseNumber))
+            if (garage.IsVehicleInGarage(licenseNumber))
             {
+                Console.WriteLine("Vehicle is already in the garage. Status set to 'under repair'.");
                 garage.ChangeVehicleStatus(licenseNumber, eVehicleStatus.UnderRepair);
-                Console.WriteLine("Vehicle already exists. Status changed to 'Under Repair'.");
-                Console.ReadKey();
-                return;
             }
-
-            Console.WriteLine("Select vehicle type:");
-            Console.WriteLine("1. Regular Motorcycle");
-            Console.WriteLine("2. Electric Motorcycle");
-            Console.WriteLine("3. Regular Car");
-            Console.WriteLine("4. Electric Car");
-            Console.WriteLine("5. Truck");
-            string vehicleTypeChoice = Console.ReadLine();
-
-            Console.WriteLine("Enter model name:");
-            string modelName = Console.ReadLine();
-
-            Console.WriteLine("Enter owner's name:");
-            string ownerName = Console.ReadLine();
-
-            Console.WriteLine("Enter owner's phone:");
-            string ownerPhone = Console.ReadLine();
-
-            Console.WriteLine("Enter energy percentage:");
-            float energyPercentage = float.Parse(Console.ReadLine());
-
-            List<Wheel> wheels = new List<Wheel>();
-            Console.WriteLine("Enter wheel manufacturer name:");
-            string wheelManufacturer = Console.ReadLine();
-
-            Console.WriteLine("Enter current air pressure:");
-            float currentAirPressure = float.Parse(Console.ReadLine());
-
-            float maxAirPressure;
-            int numberOfWheels;
-            switch (vehicleTypeChoice)
+            else
             {
-                case "1":
-                    maxAirPressure = 33;
-                    numberOfWheels = 2;
-                    break;
-                case "2":
-                    maxAirPressure = 33;
-                    numberOfWheels = 2;
-                    break;
-                case "3":
-                    maxAirPressure = 31;
-                    numberOfWheels = 5;
-                    break;
-                case "4":
-                    maxAirPressure = 31;
-                    numberOfWheels = 5;
-                    break;
-                case "5":
-                    maxAirPressure = 28;
-                    numberOfWheels = 12;
-                    break;
-                default:
-                    throw new ArgumentException("Invalid vehicle type.");
-            }
+                Console.WriteLine("Select vehicle type:");
+                var supportedTypes = VehicleBuilder.GetSupportedVehicleTypes();
+                for (int i = 0; i < supportedTypes.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {supportedTypes[i]}");
+                }
 
-            for (int i = 0; i < numberOfWheels; i++)
-            {
-                wheels.Add(new Wheel(wheelManufacturer, currentAirPressure, maxAirPressure));
-            }
+                int vehicleTypeIndex = int.Parse(Console.ReadLine()) - 1;
+                eVehicleType selectedType = supportedTypes[vehicleTypeIndex];
 
-            Vehicle vehicle;
-            switch (vehicleTypeChoice)
-            {
-                case "1":
-                    Console.WriteLine("Enter fuel type (Octan98):");
-                    eFuelType fuelType = (eFuelType)Enum.Parse(typeof(eFuelType), Console.ReadLine(), true);
+                Vehicle newVehicle = VehicleBuilder.CreateVehicle(selectedType);
+                newVehicle.LicenseNumber = licenseNumber;
 
-                    Console.WriteLine("Enter current fuel amount:");
-                    float currentFuelAmount = float.Parse(Console.ReadLine());
+                // Here you should collect the specific details for each vehicle type
+                Console.WriteLine("Enter model name:");
+                newVehicle.ModelName = Console.ReadLine();
 
-                    Console.WriteLine("Enter max fuel amount:");
-                    float maxFuelAmount = float.Parse(Console.ReadLine());
+                Console.WriteLine("Enter owner name:");
+                newVehicle.OwnerName = Console.ReadLine();
+
+                Console.WriteLine("Enter owner phone:");
+                newVehicle.OwnerPhone = Console.ReadLine();
+
+                // Initialize wheels
+                Console.WriteLine("Enter manufacturer name for wheels:");
+                string manufacturerName = Console.ReadLine();
+
+                Console.WriteLine("Enter current air pressure for wheels:");
+                float currentAirPressure = float.Parse(Console.ReadLine());
+
+                foreach (var wheel in newVehicle.Wheels)
+                {
+                    wheel.ManufacturerName = manufacturerName;
+                    wheel.CurrentAirPressure = currentAirPressure;
+                }
+
+                if (newVehicle is FuelVehicle fuelVehicle)
+                {
+                    Console.WriteLine("Enter fuel amount:");
+                    fuelVehicle.CurrentFuelAmount = float.Parse(Console.ReadLine());
+                }
+                else if (newVehicle is ElectricVehicle electricVehicle)
+                {
+                    Console.WriteLine("Enter remaining battery time:");
+                    electricVehicle.BatteryTimeRemaining = float.Parse(Console.ReadLine());
+                }
+
+                if (newVehicle is RegularMotorcycle regularMotorcycle)
+                {
                     Console.WriteLine("Enter license type (A, A1, AA, B1):");
-                    eLicenseType licenseType = (eLicenseType)Enum.Parse(typeof(eLicenseType), Console.ReadLine(), true);
-                    Console.WriteLine("Enter engine volume:");
-                    int engineVolume = int.Parse(Console.ReadLine());
-
-                    vehicle = new RegularMotorcycle(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, fuelType, currentFuelAmount, maxFuelAmount, licenseType, engineVolume);
-                    break;
-
-                case "2":
-                    Console.WriteLine("Enter battery time remaining:");
-                    float batteryTimeRemaining = float.Parse(Console.ReadLine());
-
-                    Console.WriteLine("Enter max battery time:");
-                    float maxBatteryTime = float.Parse(Console.ReadLine());
-                    Console.WriteLine("Enter license type (A, A1, AA, B1):");
-                    licenseType = (eLicenseType)Enum.Parse(typeof(eLicenseType), Console.ReadLine(), true);
+                    regularMotorcycle.LicenseType = (eLicenseType)Enum.Parse(typeof(eLicenseType), Console.ReadLine(), true);
 
                     Console.WriteLine("Enter engine volume:");
-                    engineVolume = int.Parse(Console.ReadLine());
+                    regularMotorcycle.EngineVolume = int.Parse(Console.ReadLine());
+                }
+                else if (newVehicle is ElectricMotorcycle electricMotorcycle)
+                {
+                    Console.WriteLine("Enter license type (A, A1, AA, B1):");
+                    electricMotorcycle.LicenseType = (eLicenseType)Enum.Parse(typeof(eLicenseType), Console.ReadLine(), true);
 
-                    vehicle = new ElectricMotorcycle(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, batteryTimeRemaining, maxBatteryTime, licenseType, engineVolume);
-                    break;
-
-                case "3":
-                    Console.WriteLine("Enter fuel type (Octan95):");
-                    fuelType = (eFuelType)Enum.Parse(typeof(eFuelType), Console.ReadLine(), true);
-
-                    Console.WriteLine("Enter current fuel amount:");
-                    currentFuelAmount = float.Parse(Console.ReadLine());
-
-                    Console.WriteLine("Enter max fuel amount:");
-                    maxFuelAmount = float.Parse(Console.ReadLine());
-
-                    Console.WriteLine("Enter car color (Yellow, White, Red, Black):");
-                    CarColor color = (CarColor)Enum.Parse(typeof(CarColor), Console.ReadLine(), true);
+                    Console.WriteLine("Enter engine volume:");
+                    electricMotorcycle.EngineVolume = int.Parse(Console.ReadLine());
+                }
+                else if (newVehicle is RegularCar regularCar)
+                {
+                    Console.WriteLine("Enter car color (yellow, white, red, black):");
+                    regularCar.Color = (eCarColor)Enum.Parse(typeof(eCarColor), Console.ReadLine(), true);
 
                     Console.WriteLine("Enter number of doors (2, 3, 4, 5):");
-                    int numberOfDoors = int.Parse(Console.ReadLine());
-
-                    vehicle = new RegularCar(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, fuelType, currentFuelAmount, maxFuelAmount, color, numberOfDoors);
-                    break;
-
-                case "4":
-                    Console.WriteLine("Enter battery time remaining:");
-                    batteryTimeRemaining = float.Parse(Console.ReadLine());
-
-                    Console.WriteLine("Enter max battery time:");
-                    maxBatteryTime = float.Parse(Console.ReadLine());
-
-                    Console.WriteLine("Enter car color (Yellow, White, Red, Black):");
-                    color = (CarColor)Enum.Parse(typeof(CarColor), Console.ReadLine(), true);
+                    regularCar.NumberOfDoors = (eDoorsNumber)Enum.Parse(typeof(eCarColor), Console.ReadLine(), true);
+                }
+                else if (newVehicle is ElectricCar electricCar)
+                {
+                    Console.WriteLine("Enter car color (yellow, white, red, black):");
+                    electricCar.Color = (eCarColor)Enum.Parse(typeof(eCarColor), Console.ReadLine(), true);
 
                     Console.WriteLine("Enter number of doors (2, 3, 4, 5):");
-                    numberOfDoors = int.Parse(Console.ReadLine());
-
-                    vehicle = new ElectricCar(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, batteryTimeRemaining, maxBatteryTime, color, numberOfDoors);
-                    break;
-
-                case "5":
-                    Console.WriteLine("Enter fuel type (Soler):");
-                    fuelType = (eFuelType)Enum.Parse(typeof(eFuelType), Console.ReadLine(), true);
-
-                    Console.WriteLine("Enter current fuel amount:");
-                    currentFuelAmount = float.Parse(Console.ReadLine());
-
-                    Console.WriteLine("Enter max fuel amount:");
-                    maxFuelAmount = float.Parse(Console.ReadLine());
-
-                    Console.WriteLine("Does it transport hazardous materials? (true/false):");
-                    bool transportsHazardousMaterials = bool.Parse(Console.ReadLine());
+                    electricCar.NumberOfDoors = (eDoorsNumber)Enum.Parse(typeof(eCarColor), Console.ReadLine(), true);
+                }
+                else if (newVehicle is Truck truck)
+                {
+                    Console.WriteLine("Does the truck transport hazardous materials? (yes/no):");
+                    truck.IsTransportsHazardousMaterials = Console.ReadLine().ToLower() == "yes";
 
                     Console.WriteLine("Enter cargo volume:");
-                    float cargoVolume = float.Parse(Console.ReadLine());
+                    truck.CargoVolume = float.Parse(Console.ReadLine());
+                }
 
-                    vehicle = new Truck(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, fuelType, currentFuelAmount, maxFuelAmount, transportsHazardousMaterials, cargoVolume);
-                    break;
-
-                default:
-                    throw new ArgumentException("Invalid vehicle type.");
+                garage.AddVehicle(newVehicle);
+                Console.WriteLine("Vehicle added successfully.");
             }
-
-            garage.AddVehicle(vehicle);
-            Console.WriteLine("Vehicle added successfully. Press any key to continue...");
+            Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
         }
+
 
         private void ShowVehicleList()
         {
@@ -371,7 +307,7 @@ namespace Ex03.ConsoleUI
             {
                 Console.WriteLine($"License Type: {electricMotorcycle.LicenseType}");
                 Console.WriteLine($"Engine Volume: {electricMotorcycle.EngineVolume}cc");
-            }           
+            }
             else if (vehicle is Truck truck)
             {
                 Console.WriteLine($"Transports Hazardous Materials: {truck.IsTransportsHazardousMaterials}");
@@ -380,6 +316,18 @@ namespace Ex03.ConsoleUI
 
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
+        }
+
+        public static T GetEnumFromUser<T>(string i_EnumMessage)
+            where T : struct
+        {
+            //Console.WriteLine($"Enter {i_EnumMessage}:");
+            bool isValid = Enum.TryParse(Console.ReadLine(), true, out T enumResult);
+            if (!isValid)
+            {
+                throw new FormatException($"Invalid {i_EnumMessage}!");
+            }
+            return enumResult;
         }
     }
 }

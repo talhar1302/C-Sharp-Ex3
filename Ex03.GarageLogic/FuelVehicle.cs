@@ -17,19 +17,6 @@ namespace Ex03.GarageLogic
             CurrentFuelAmount = currentFuelAmount;
             MaxFuelAmount = maxFuelAmount;
         }
-
-        public void Refuel(float amount, eFuelType fuelType)
-        {
-            if (fuelType != FuelType)
-            {
-                throw new ArgumentException("Incorrect fuel type.");
-            }
-            if (CurrentFuelAmount + amount > MaxFuelAmount)
-            {
-                throw new ValueOutOfRangeException(0, MaxFuelAmount - CurrentFuelAmount, "Fuel amount exceeds the maximum limit.");
-            }
-            CurrentFuelAmount += amount;
-        }
+        public abstract void Refuel(float amount, eFuelType fuelType);  
     }
-
 }

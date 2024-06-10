@@ -22,7 +22,10 @@ namespace Ex03.GarageLogic
             }
             vehicles.Add(vehicle.LicenseNumber, vehicle);
         }
-
+        public bool IsVehicleInGarage(string licenseNumber)
+        {
+            return vehicles.ContainsKey(licenseNumber);
+        }
         public List<string> GetVehicleLicenseNumbers(eVehicleStatus? status = null)
         {
             if (status == null)

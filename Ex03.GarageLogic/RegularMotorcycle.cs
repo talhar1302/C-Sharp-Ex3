@@ -9,13 +9,26 @@ namespace Ex03.GarageLogic
         public eLicenseType LicenseType { get; set; }
         public int EngineVolume { get; set; }
 
-        public RegularMotorcycle(string modelName, string licenseNumber, float energyPercentage, List<Wheel> wheels, string ownerName, string ownerPhone, eFuelType fuelType, float currentFuelAmount, float maxFuelAmount, eLicenseType licenseType, int engineVolume)
-            : base(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, fuelType, currentFuelAmount, maxFuelAmount)
+        public RegularMotorcycle()
+            : base(null, null, 0, new List<Wheel>(), null, null, eFuelType.Octan98, 0, 5.5f)
         {
-            LicenseType = licenseType;
-            EngineVolume = engineVolume;
+            for (int i = 0; i < 2; i++)
+            {
+                Wheels.Add(new Wheel("", 0, 33));
+            }
         }
-
+        public override void Refuel(float amount, eFuelType fuelType)
+        {
+            if (fuelType != FuelType)
+            {
+                throw new ArgumentException("Incorrect fuel type.");
+            }
+            if (CurrentFuelAmount + amount > MaxFuelAmount)
+            {
+                throw new ValueOutOfRangeException(0, MaxFuelAmount - CurrentFuelAmount, "Fuel amount exceeds the maximum limit.");
+            }
+            CurrentFuelAmount += amount;
+        }
         public override void InflateWheelsToMax()
         {
             foreach (var wheel in Wheels)

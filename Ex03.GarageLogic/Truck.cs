@@ -9,11 +9,25 @@ namespace Ex03.GarageLogic
         public bool IsTransportsHazardousMaterials { get; set; }
         public float CargoVolume { get; set; }
 
-        public Truck(string modelName, string licenseNumber, float energyPercentage, List<Wheel> wheels, string ownerName, string ownerPhone, eFuelType fuelType, float currentFuelAmount, float maxFuelAmount, bool isHazardousMaterial, float cargoVolume)
-            : base(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone, fuelType, currentFuelAmount, maxFuelAmount)
+        public Truck()
+            : base(null, null, 0, new List<Wheel>(), null, null, eFuelType.Soler, 0, 120f)
         {
-            IsTransportsHazardousMaterials = isHazardousMaterial;
-            CargoVolume = cargoVolume;
+            for (int i = 0; i < 12; i++)
+            {
+                Wheels.Add(new Wheel("", 0, 28));
+            }
+        }
+        public override void Refuel(float amount, eFuelType fuelType)
+        {
+            if (fuelType != FuelType)
+            {
+                throw new ArgumentException("Incorrect fuel type.");
+            }
+            if (CurrentFuelAmount + amount > MaxFuelAmount)
+            {
+                throw new ValueOutOfRangeException(0, MaxFuelAmount - CurrentFuelAmount, "Fuel amount exceeds the maximum limit.");
+            }
+            CurrentFuelAmount += amount;
         }
 
         public override void InflateWheelsToMax()
