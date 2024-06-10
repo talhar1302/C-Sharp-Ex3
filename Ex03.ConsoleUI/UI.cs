@@ -1,7 +1,6 @@
 ﻿using Ex03.GarageLogic;
 using System;
 using System.Collections.Generic;
-using System.Runtime.ConstrainedExecution;
 
 namespace Ex03.ConsoleUI
 {
@@ -70,10 +69,18 @@ namespace Ex03.ConsoleUI
                 }
             }
         }
+
         private void AddVehicle()
         {
             Console.WriteLine("Enter vehicle license number:");
             string licenseNumber = Console.ReadLine();
+
+            if (!InputValidator.ValidateLicenseNumber(licenseNumber))
+            {
+                Console.WriteLine("Invalid license number. Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
 
             if (garage.IsVehicleInGarage(licenseNumber))
             {
@@ -95,22 +102,57 @@ namespace Ex03.ConsoleUI
                 Vehicle newVehicle = VehicleBuilder.CreateVehicle(selectedType);
                 newVehicle.LicenseNumber = licenseNumber;
 
-                // Here you should collect the specific details for each vehicle type
+                // Model Name
                 Console.WriteLine("Enter model name:");
-                newVehicle.ModelName = Console.ReadLine();
+                string modelName = Console.ReadLine();
+                if (!InputValidator.ValidateModelName(modelName))
+                {
+                    Console.WriteLine("Invalid model name. Press any key to continue...");
+                    Console.ReadKey();
+                    return;
+                }
+                newVehicle.ModelName = modelName;
 
+                // Owner Name
                 Console.WriteLine("Enter owner name:");
-                newVehicle.OwnerName = Console.ReadLine();
+                string ownerName = Console.ReadLine();
+                if (!InputValidator.ValidateOwnerName(ownerName))
+                {
+                    Console.WriteLine("Invalid owner name. Press any key to continue...");
+                    Console.ReadKey();
+                    return;
+                }
+                newVehicle.OwnerName = ownerName;
 
+                // Owner Phone
                 Console.WriteLine("Enter owner phone:");
-                newVehicle.OwnerPhone = Console.ReadLine();
+                string ownerPhone = Console.ReadLine();
+                if (!InputValidator.ValidatePhoneNumber(ownerPhone))
+                {
+                    Console.WriteLine("Invalid phone number. Press any key to continue...");
+                    Console.ReadKey();
+                    return;
+                }
+                newVehicle.OwnerPhone = ownerPhone;
 
-                // Initialize wheels
+                // Wheels
                 Console.WriteLine("Enter manufacturer name for wheels:");
                 string manufacturerName = Console.ReadLine();
+                if (!InputValidator.ValidateManufacturerName(manufacturerName))
+                {
+                    Console.WriteLine("Invalid manufacturer name. Press any key to continue...");
+                    Console.ReadKey();
+                    return;
+                }
 
                 Console.WriteLine("Enter current air pressure for wheels:");
                 float currentAirPressure = float.Parse(Console.ReadLine());
+                if (!InputValidator.ValidateAirPressure(currentAirPressure, newVehicle.Wheels[0].MaxAirPressure))
+                {
+                    Console.WriteLine("Invalid air pressure. Press any key to continue...");
+                    Console.ReadKey();
+                    return;
+                }
 
                 foreach (var wheel in newVehicle.Wheels)
                 {
@@ -121,7 +163,14 @@ namespace Ex03.ConsoleUI
                 if (newVehicle is FuelVehicle fuelVehicle)
                 {
                     Console.WriteLine("Enter fuel amount:");
-                    fuelVehicle.CurrentFuelAmount = float.Parse(Console.ReadLine());
+                    float currentFuelAmount = float.Parse(Console.ReadLine());
+                    if (!InputValidator.ValidateFuelAmount(currentFuelAmount, fuelVehicle.MaxFuelAmount))
+                    {
+                        Console.WriteLine("Invalid fuel amount. Press any key to continue...");
+                        Console.ReadKey();
+                        return;
+                    }
+                    fuelVehicle.CurrentFuelAmount = currentFuelAmount;
                 }
                 else if (newVehicle is ElectricVehicle electricVehicle)
                 {
@@ -135,7 +184,14 @@ namespace Ex03.ConsoleUI
                     regularMotorcycle.LicenseType = (eLicenseType)Enum.Parse(typeof(eLicenseType), Console.ReadLine(), true);
 
                     Console.WriteLine("Enter engine volume:");
-                    regularMotorcycle.EngineVolume = int.Parse(Console.ReadLine());
+                    string engineVolume = Console.ReadLine();
+                    if (!InputValidator.ValidateEngineVolume(engineVolume))
+                    {
+                        Console.WriteLine("Invalid engine volume. Press any key to continue...");
+                        Console.ReadKey();
+                        return;
+                    }
+                    regularMotorcycle.EngineVolume = int.Parse(engineVolume);
                 }
                 else if (newVehicle is ElectricMotorcycle electricMotorcycle)
                 {
@@ -143,7 +199,14 @@ namespace Ex03.ConsoleUI
                     electricMotorcycle.LicenseType = (eLicenseType)Enum.Parse(typeof(eLicenseType), Console.ReadLine(), true);
 
                     Console.WriteLine("Enter engine volume:");
-                    electricMotorcycle.EngineVolume = int.Parse(Console.ReadLine());
+                    string engineVolume = Console.ReadLine();
+                    if (!InputValidator.ValidateEngineVolume(engineVolume))
+                    {
+                        Console.WriteLine("Invalid engine volume. Press any key to continue...");
+                        Console.ReadKey();
+                        return;
+                    }
+                    electricMotorcycle.EngineVolume = int.Parse(engineVolume);
                 }
                 else if (newVehicle is RegularCar regularCar)
                 {
@@ -151,7 +214,7 @@ namespace Ex03.ConsoleUI
                     regularCar.Color = (eCarColor)Enum.Parse(typeof(eCarColor), Console.ReadLine(), true);
 
                     Console.WriteLine("Enter number of doors (2, 3, 4, 5):");
-                    regularCar.NumberOfDoors = (eDoorsNumber)Enum.Parse(typeof(eCarColor), Console.ReadLine(), true);
+                    regularCar.NumberOfDoors = (eDoorsNumber)Enum.Parse(typeof(eDoorsNumber), Console.ReadLine(), true);
                 }
                 else if (newVehicle is ElectricCar electricCar)
                 {
@@ -159,12 +222,19 @@ namespace Ex03.ConsoleUI
                     electricCar.Color = (eCarColor)Enum.Parse(typeof(eCarColor), Console.ReadLine(), true);
 
                     Console.WriteLine("Enter number of doors (2, 3, 4, 5):");
-                    electricCar.NumberOfDoors = (eDoorsNumber)Enum.Parse(typeof(eCarColor), Console.ReadLine(), true);
+                    electricCar.NumberOfDoors = (eDoorsNumber)Enum.Parse(typeof(eDoorsNumber), Console.ReadLine(), true);
                 }
                 else if (newVehicle is Truck truck)
                 {
                     Console.WriteLine("Does the truck transport hazardous materials? (yes/no):");
-                    truck.IsTransportsHazardousMaterials = Console.ReadLine().ToLower() == "yes";
+                    string isHazardous = Console.ReadLine().ToLower();
+                    if (!InputValidator.ValidateYesNo(isHazardous))
+                    {
+                        Console.WriteLine("Invalid input. Press any key to continue...");
+                        Console.ReadKey();
+                        return;
+                    }
+                    truck.IsTransportsHazardousMaterials = isHazardous == "yes";
 
                     Console.WriteLine("Enter cargo volume:");
                     truck.CargoVolume = float.Parse(Console.ReadLine());
@@ -177,11 +247,16 @@ namespace Ex03.ConsoleUI
             Console.ReadKey();
         }
 
-
         private void ShowVehicleList()
         {
             Console.WriteLine("Show vehicles by status? (yes/no):");
             string showByStatus = Console.ReadLine().ToLower();
+            if (!InputValidator.ValidateYesNo(showByStatus))
+            {
+                Console.WriteLine("Invalid input. Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
 
             List<string> licenseNumbers;
             if (showByStatus == "yes")
@@ -195,10 +270,17 @@ namespace Ex03.ConsoleUI
                 licenseNumbers = garage.GetVehicleLicenseNumbers();
             }
 
-            Console.WriteLine("Vehicle License Numbers:");
-            foreach (var licenseNumber in licenseNumbers)
+            if (licenseNumbers.Count == 0)
             {
-                Console.WriteLine(licenseNumber);
+                Console.WriteLine("No vehicles found.");
+            }
+            else
+            {
+                Console.WriteLine("Vehicle License Numbers:");
+                foreach (var licenseNumber in licenseNumbers)
+                {
+                    Console.WriteLine(licenseNumber);
+                }
             }
 
             Console.WriteLine("Press any key to continue...");
@@ -209,6 +291,13 @@ namespace Ex03.ConsoleUI
         {
             Console.WriteLine("Enter vehicle license number:");
             string licenseNumber = Console.ReadLine();
+
+            if (!garage.IsVehicleInGarage(licenseNumber))
+            {
+                Console.WriteLine("Vehicle not found. Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
 
             Console.WriteLine("Enter new status (UnderRepair, Repaired, Paid):");
             eVehicleStatus newStatus = (eVehicleStatus)Enum.Parse(typeof(eVehicleStatus), Console.ReadLine(), true);
@@ -223,6 +312,13 @@ namespace Ex03.ConsoleUI
             Console.WriteLine("Enter vehicle license number:");
             string licenseNumber = Console.ReadLine();
 
+            if (!garage.IsVehicleInGarage(licenseNumber))
+            {
+                Console.WriteLine("Vehicle not found. Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
             garage.InflateWheelsToMax(licenseNumber);
             Console.WriteLine("Wheels inflated to max successfully. Press any key to continue...");
             Console.ReadKey();
@@ -233,10 +329,41 @@ namespace Ex03.ConsoleUI
             Console.WriteLine("Enter vehicle license number:");
             string licenseNumber = Console.ReadLine();
 
+            if (!garage.IsVehicleInGarage(licenseNumber))
+            {
+                Console.WriteLine("Vehicle not found. Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            Vehicle vehicle = garage.GetVehicle(licenseNumber);
+            if (!(vehicle is FuelVehicle))
+            {
+                Console.WriteLine("Vehicle is not fuel-based. Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
             Console.WriteLine("Enter fuel type (Octan95, Octan96, Octan98, Soler):");
             eFuelType fuelType = (eFuelType)Enum.Parse(typeof(eFuelType), Console.ReadLine(), true);
+
+            FuelVehicle fuelVehicle = (FuelVehicle)vehicle;
+            if (fuelVehicle.FuelType != fuelType)
+            {
+                Console.WriteLine("Incorrect fuel type. Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
             Console.WriteLine("Enter amount to refuel:");
             float amount = float.Parse(Console.ReadLine());
+
+            if (!InputValidator.ValidateFuelAmount(amount, fuelVehicle.MaxFuelAmount - fuelVehicle.CurrentFuelAmount))
+            {
+                Console.WriteLine("Invalid fuel amount. Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
 
             garage.RefuelVehicle(licenseNumber, fuelType, amount);
             Console.WriteLine("Vehicle refueled successfully. Press any key to continue...");
@@ -248,8 +375,23 @@ namespace Ex03.ConsoleUI
             Console.WriteLine("Enter vehicle license number:");
             string licenseNumber = Console.ReadLine();
 
-            Console.WriteLine("Enter amount of hours to charge:");
-            float hours = float.Parse(Console.ReadLine());
+            if (!garage.IsVehicleInGarage(licenseNumber))
+            {
+                Console.WriteLine("Vehicle not found. Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            Vehicle vehicle = garage.GetVehicle(licenseNumber);
+            if (!(vehicle is ElectricVehicle))
+            {
+                Console.WriteLine("Vehicle is not electric. Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("Enter amount of minutes to charge:");
+            float hours = float.Parse(Console.ReadLine()) / 60;
 
             garage.ChargeVehicle(licenseNumber, hours);
             Console.WriteLine("Vehicle charged successfully. Press any key to continue...");
@@ -260,6 +402,13 @@ namespace Ex03.ConsoleUI
         {
             Console.WriteLine("Enter vehicle license number:");
             string licenseNumber = Console.ReadLine();
+
+            if (!garage.IsVehicleInGarage(licenseNumber))
+            {
+                Console.WriteLine("Vehicle not found. Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
 
             Vehicle vehicle = garage.GetVehicle(licenseNumber);
 
