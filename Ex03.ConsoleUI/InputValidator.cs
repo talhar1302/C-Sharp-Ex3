@@ -5,18 +5,7 @@
         public static bool ValidateLicenseNumber(string licenseNumber)
         {
             return (!string.IsNullOrEmpty(licenseNumber) && licenseNumber.Length <= 8);
-        }
-
-        public static bool ValidateModelName(string modelName)
-        {
-            return ValidateLettersOnly(modelName);
-        }
-
-        public static bool ValidateOwnerName(string ownerName)
-        {
-            return ValidateLettersOnly(ownerName);
-        }
-
+        }   
         public static bool ValidateLettersOnly(string input)
         {
             bool valid = true;
@@ -56,39 +45,19 @@
             }
 
             return true;
-        }
-
-        public static bool ValidateManufacturerName(string manufacturerName)
+        }     
+        public static bool ValidateInRange(float i_Current, float i_MaxPossible)
         {
-            if (string.IsNullOrEmpty(manufacturerName))
-            {
-                return false;
-            }
-
-            foreach (char c in manufacturerName)
-            {
-                if (!char.IsLetter(c))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return i_Current <= i_MaxPossible;
         }
-
-        public static bool ValidateAirPressure(float currentAirPressure, float maxAirPressure)
-        {
-            return currentAirPressure <= maxAirPressure;
-        }
-
-        public static bool ValidateFuelAmount(float currentFuelAmount, float maxFuelAmount)
-        {
-            return currentFuelAmount <= maxFuelAmount;
-        }
-
-        public static bool ValidateEngineVolume(string engineVolume)
+        public static bool ValidateIntegerNumber(string engineVolume)
         {
             return int.TryParse(engineVolume, out _);
+        }
+
+        public static bool ValidateFloatNumber(string engineVolume)
+        {
+            return float.TryParse(engineVolume, out _);
         }
 
         public static bool ValidateYesNo(string input)
