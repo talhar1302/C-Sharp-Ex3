@@ -22,6 +22,10 @@ namespace Ex03.GarageLogic
             }
             vehicles.Add(vehicle.LicenseNumber, vehicle);
         }
+        public bool IsGarageEmpty()
+        {
+            return vehicles.Count == 0;
+        }
         public bool IsVehicleInGarage(string licenseNumber)
         {
             return vehicles.ContainsKey(licenseNumber);
