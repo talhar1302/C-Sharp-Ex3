@@ -19,14 +19,14 @@ namespace Ex03.GarageLogic
         public string OwnerPhone { get => m_OwnerPhone; set => m_OwnerPhone = value; }
         public eVehicleStatus Status { get=>m_status; set=>m_status=value; }
 
-        protected Vehicle(string i_modelName, string i_licenseNumber, float i_energyPercentage, List<Wheel> i_wheels, string i_ownerName, string i_ownerPhone)
+        protected Vehicle(string i_ModelName, string i_LicenseNumber, float i_EnergyPercentage, List<Wheel> i_Wheels, string i_OwnerName, string i_OwnerPhone)
         {
-            m_ModelName = i_modelName;
-            m_LicenseNumber = i_licenseNumber;
-            m_EnergyPercentage = i_energyPercentage;
-            m_Wheels = i_wheels;
-            m_OwnerName = i_ownerName;
-            m_OwnerName = i_ownerPhone;
+            m_ModelName = i_ModelName;
+            m_LicenseNumber = i_LicenseNumber;
+            m_EnergyPercentage = i_EnergyPercentage;
+            m_Wheels = i_Wheels;
+            m_OwnerName = i_OwnerName;
+            m_OwnerName = i_OwnerPhone;
             m_status = eVehicleStatus.UnderRepair;
         }
 

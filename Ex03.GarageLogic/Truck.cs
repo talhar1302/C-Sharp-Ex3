@@ -19,17 +19,17 @@ namespace Ex03.GarageLogic
                 Wheels.Add(new Wheel("", 0, 28));
             }
         }
-        public override void Refuel(float i_amount, eFuelType i_fuelType)
+        public override void Refuel(float i_Amount, eFuelType i_FuelType)
         {
-            if (i_fuelType != FuelType)
+            if (i_FuelType != FuelType)
             {
                 throw new ArgumentException("Incorrect fuel type.");
             }
-            if (CurrentFuelAmount + i_amount > MaxFuelAmount)
+            if (CurrentFuelAmount + i_Amount > MaxFuelAmount)
             {
                 throw new ValueOutOfRangeException(0, MaxFuelAmount - CurrentFuelAmount, "Fuel amount exceeds the maximum limit.");
             }
-            CurrentFuelAmount += i_amount;
+            CurrentFuelAmount += i_Amount;
         }
 
         public override void InflateWheelsToMax()

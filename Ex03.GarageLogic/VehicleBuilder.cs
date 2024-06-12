@@ -14,9 +14,9 @@ namespace Ex03.GarageLogic
             { eVehicleType.Truck, () => new Truck() }
         };
 
-        public static Vehicle CreateVehicle(eVehicleType i_vehicleType)
+        public static Vehicle CreateVehicle(eVehicleType i_VehicleType)
         {
-            if (VehicleCreators.TryGetValue(i_vehicleType, out Func<Vehicle> creator))
+            if (VehicleCreators.TryGetValue(i_VehicleType, out Func<Vehicle> creator))
             {
                 return creator();
             }

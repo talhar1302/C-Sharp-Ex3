@@ -13,20 +13,20 @@ namespace Ex03.GarageLogic
         public float CurrentAirPressure { get=> m_CurrentAirPressure; set=> m_CurrentAirPressure=value; }
         public float MaxAirPressure { get=> r_maxAirPressure;}
 
-        public Wheel(string i_manufacturerName, float i_currentAirPressure, float i_maxAirPressure)
+        public Wheel(string i_ManufacturerName, float i_CurrentAirPressure, float i_MaxAirPressure)
         {
-            m_ManufacturerName = i_manufacturerName;
-            m_CurrentAirPressure = i_currentAirPressure;
-            r_maxAirPressure = i_maxAirPressure;
+            m_ManufacturerName = i_ManufacturerName;
+            m_CurrentAirPressure = i_CurrentAirPressure;
+            r_maxAirPressure = i_MaxAirPressure;
         }
 
-        public void Inflate(float i_amount)
+        public void Inflate(float i_Amount)
         {
-            if (CurrentAirPressure + i_amount > MaxAirPressure)
+            if (CurrentAirPressure + i_Amount > MaxAirPressure)
             {
                 throw new ValueOutOfRangeException(0, MaxAirPressure - CurrentAirPressure, "Air pressure exceeds the maximum limit.");
             }
-            CurrentAirPressure += i_amount;
+            CurrentAirPressure += i_Amount;
         }
     }
 

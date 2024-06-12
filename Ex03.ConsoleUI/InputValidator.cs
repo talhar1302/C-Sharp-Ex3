@@ -2,21 +2,21 @@
 {
     public static class InputValidator
     {
-        public static bool ValidateLicenseNumber(string i_licenseNumber)
+        public static bool ValidateLicenseNumber(string i_LicenseNumber)
         {
-            return (!string.IsNullOrEmpty(i_licenseNumber) && i_licenseNumber.Length <= 8);
+            return (!string.IsNullOrEmpty(i_LicenseNumber) && i_LicenseNumber.Length <= 8);
         }   
-        public static bool ValidateLettersOnly(string i_input)
+        public static bool ValidateLettersOnly(string i_Input)
         {
             bool valid = true;
 
-            if (string.IsNullOrEmpty(i_input))
+            if (string.IsNullOrEmpty(i_Input))
             {
                 valid = false;
             }
             else
             {
-                foreach (char c in i_input)
+                foreach (char c in i_Input)
                 {
                     if (!char.IsLetter(c))
                     {
@@ -29,14 +29,14 @@
             return valid;
         }
 
-        public static bool ValidatePhoneNumber(string i_phoneNumber)
+        public static bool ValidatePhoneNumber(string i_PhoneNumber)
         {
-            if (i_phoneNumber.Length != 10)
+            if (i_PhoneNumber.Length != 10)
             {
                 return false;
             }
 
-            foreach (char c in i_phoneNumber)
+            foreach (char c in i_PhoneNumber)
             {
                 if (!char.IsDigit(c))
                 {
@@ -50,19 +50,19 @@
         {
             return i_Current <= i_MaxPossible;
         }
-        public static bool ValidateIntegerNumber(string i_engineVolume)
+        public static bool ValidateIntegerNumber(string i_EngineVolume)
         {
-            return int.TryParse(i_engineVolume, out _);
+            return int.TryParse(i_EngineVolume, out _);
         }
 
-        public static bool ValidateFloatNumber(string i_engineVolume)
+        public static bool ValidateFloatNumber(string i_EngineVolume)
         {
-            return float.TryParse(i_engineVolume, out _);
+            return float.TryParse(i_EngineVolume, out _);
         }
 
-        public static bool ValidateYesNo(string i_input)
+        public static bool ValidateYesNo(string i_Input)
         {
-            string lowerInput = i_input.ToLower();
+            string lowerInput = i_Input.ToLower();
             return lowerInput == "yes" || lowerInput == "no";
         }
     }

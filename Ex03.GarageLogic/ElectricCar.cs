@@ -19,13 +19,13 @@ namespace Ex03.GarageLogic
                 Wheels.Add(new Wheel("", 0, 31));
             }
         }
-        public override void ChargeBattery(float i_hours)
+        public override void ChargeBattery(float i_Hours)
         {
-            if (BatteryTimeRemaining + i_hours > MaxBatteryTime)
+            if (BatteryTimeRemaining + i_Hours > MaxBatteryTime)
             {
                 throw new ValueOutOfRangeException(0, MaxBatteryTime - BatteryTimeRemaining, "Battery time exceeds the maximum limit.");
             }
-            BatteryTimeRemaining += i_hours;
+            BatteryTimeRemaining += i_Hours;
         }
         public override void InflateWheelsToMax()
         {

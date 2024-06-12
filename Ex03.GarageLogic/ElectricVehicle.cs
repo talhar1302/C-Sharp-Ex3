@@ -10,12 +10,12 @@ namespace Ex03.GarageLogic
         private readonly float r_MaxBatteryTime;
         public float BatteryTimeRemaining { get=>m_BatteryTimeRemaining; set=>m_BatteryTimeRemaining=value; }
         public float MaxBatteryTime { get=>r_MaxBatteryTime;}
-        protected ElectricVehicle(string i_modelName, string i_licenseNumber, float i_energyPercentage, List<Wheel> i_wheels, string i_ownerName, string i_ownerPhone, float i_batteryTimeRemaining, float i_maxBatteryTime)
-            : base(i_modelName, i_licenseNumber, i_energyPercentage, i_wheels, i_ownerName, i_ownerPhone)
+        protected ElectricVehicle(string i_ModelName, string i_LicenseNumber, float i_EnergyPercentage, List<Wheel> i_Wheels, string i_OwnerName, string i_OwnerPhone, float i_BatteryTimeRemaining, float i_MaxBatteryTime)
+            : base(i_ModelName, i_LicenseNumber, i_EnergyPercentage, i_Wheels, i_OwnerName, i_OwnerPhone)
         {
-            m_BatteryTimeRemaining = i_batteryTimeRemaining;
-            r_MaxBatteryTime = i_maxBatteryTime;
+            m_BatteryTimeRemaining = i_BatteryTimeRemaining;
+            r_MaxBatteryTime = i_MaxBatteryTime;
         }
-        public abstract void ChargeBattery(float i_hours);       
+        public abstract void ChargeBattery(float i_Hours);       
     }
 }
