@@ -6,14 +6,16 @@ namespace Ex03.GarageLogic
 {
     public abstract class ElectricVehicle : Vehicle
     {
-        public float BatteryTimeRemaining { get; set; }
-        public float MaxBatteryTime { get; set; }
-        protected ElectricVehicle(string modelName, string licenseNumber, float energyPercentage, List<Wheel> wheels, string ownerName, string ownerPhone, float batteryTimeRemaining, float maxBatteryTime)
-            : base(modelName, licenseNumber, energyPercentage, wheels, ownerName, ownerPhone)
+        private float m_BatteryTimeRemaining;
+        private readonly float r_MaxBatteryTime;
+        public float BatteryTimeRemaining { get=>m_BatteryTimeRemaining; set=>m_BatteryTimeRemaining=value; }
+        public float MaxBatteryTime { get=>r_MaxBatteryTime;}
+        protected ElectricVehicle(string i_modelName, string i_licenseNumber, float i_energyPercentage, List<Wheel> i_wheels, string i_ownerName, string i_ownerPhone, float i_batteryTimeRemaining, float i_maxBatteryTime)
+            : base(i_modelName, i_licenseNumber, i_energyPercentage, i_wheels, i_ownerName, i_ownerPhone)
         {
-            BatteryTimeRemaining = batteryTimeRemaining;
-            MaxBatteryTime = maxBatteryTime;
+            m_BatteryTimeRemaining = i_batteryTimeRemaining;
+            r_MaxBatteryTime = i_maxBatteryTime;
         }
-        public abstract void ChargeBattery(float hours);       
+        public abstract void ChargeBattery(float i_hours);       
     }
 }

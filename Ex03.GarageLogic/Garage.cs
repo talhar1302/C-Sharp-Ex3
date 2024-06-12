@@ -7,65 +7,65 @@ namespace Ex03.GarageLogic
 {
     public class Garage
     {
-        private Dictionary<string, Vehicle> vehicles;
+        private Dictionary<string, Vehicle> m_vehicles;
 
         public Garage()
         {
-            vehicles = new Dictionary<string, Vehicle>();
+            m_vehicles = new Dictionary<string, Vehicle>();
         }
 
-        public void AddVehicle(Vehicle vehicle)
+        public void AddVehicle(Vehicle i_vehicle)
         {
-            if (vehicles.ContainsKey(vehicle.LicenseNumber))
+            if (m_vehicles.ContainsKey(i_vehicle.LicenseNumber))
             {
                 throw new ArgumentException("Vehicle with this license number already exists.");
             }
-            vehicles.Add(vehicle.LicenseNumber, vehicle);
+            m_vehicles.Add(i_vehicle.LicenseNumber, i_vehicle);
         }
         public bool IsGarageEmpty()
         {
-            return vehicles.Count == 0;
+            return m_vehicles.Count == 0;
         }
-        public bool IsVehicleInGarage(string licenseNumber)
+        public bool IsVehicleInGarage(string i_licenseNumber)
         {
-            return vehicles.ContainsKey(licenseNumber);
+            return m_vehicles.ContainsKey(i_licenseNumber);
         }
         public List<string> GetVehicleLicenseNumbers(eVehicleStatus? status = null)
         {
             if (status == null)
             {
-                return vehicles.Keys.ToList();
+                return m_vehicles.Keys.ToList();
             }
-            return vehicles.Values.Where(v => v.Status == status).Select(v => v.LicenseNumber).ToList();
+            return m_vehicles.Values.Where(v => v.Status == status).Select(v => v.LicenseNumber).ToList();
         }
 
-        public void ChangeVehicleStatus(string licenseNumber, eVehicleStatus newStatus)
+        public void ChangeVehicleStatus(string i_licenseNumber, eVehicleStatus i_newStatus)
         {
-            if (!vehicles.ContainsKey(licenseNumber))
+            if (!m_vehicles.ContainsKey(i_licenseNumber))
             {
                 throw new ArgumentException("Vehicle not found.");
             }
-            vehicles[licenseNumber].Status = newStatus;
+            m_vehicles[i_licenseNumber].Status = i_newStatus;
         }
 
-        public void InflateWheelsToMax(string licenseNumber)
+        public void InflateWheelsToMax(string i_licenseNumber)
         {
-            if (!vehicles.ContainsKey(licenseNumber))
+            if (!m_vehicles.ContainsKey(i_licenseNumber))
             {
                 throw new ArgumentException("Vehicle not found.");
             }
-            vehicles[licenseNumber].InflateWheelsToMax();
+            m_vehicles[i_licenseNumber].InflateWheelsToMax();
         }
 
-        public void RefuelVehicle(string licenseNumber, eFuelType fuelType, float amount)
+        public void RefuelVehicle(string i_licenseNumber, eFuelType i_fuelType, float i_amount)
         {
-            if (!vehicles.ContainsKey(licenseNumber))
+            if (!m_vehicles.ContainsKey(i_licenseNumber))
             {
                 throw new ArgumentException("Vehicle not found.");
             }
-            if (vehicles[licenseNumber] is FuelVehicle fuelVehicle)
+            if (m_vehicles[i_licenseNumber] is FuelVehicle fuelVehicle)
             {
-                fuelVehicle.Refuel(amount, fuelType);
+                fuelVehicle.Refuel(i_amount, i_fuelType);
             }
             else
             {
@@ -73,15 +73,15 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public void ChargeVehicle(string licenseNumber, float hours)
+        public void ChargeVehicle(string i_licenseNumber, float i_hours)
         {
-            if (!vehicles.ContainsKey(licenseNumber))
+            if (!m_vehicles.ContainsKey(i_licenseNumber))
             {
                 throw new ArgumentException("Vehicle not found.");
             }
-            if (vehicles[licenseNumber] is ElectricVehicle electricVehicle)
+            if (m_vehicles[i_licenseNumber] is ElectricVehicle electricVehicle)
             {
-                electricVehicle.ChargeBattery(hours);
+                electricVehicle.ChargeBattery(i_hours);
             }
             else
             {
@@ -89,13 +89,13 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public Vehicle GetVehicle(string licenseNumber)
+        public Vehicle GetVehicle(string i_licenseNumber)
         {
-            if (!vehicles.ContainsKey(licenseNumber))
+            if (!m_vehicles.ContainsKey(i_licenseNumber))
             {
                 throw new ArgumentException("Vehicle not found.");
             }
-            return vehicles[licenseNumber];
+            return m_vehicles[i_licenseNumber];
         }
     }
 }

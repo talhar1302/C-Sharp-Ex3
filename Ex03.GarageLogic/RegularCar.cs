@@ -6,9 +6,10 @@ namespace Ex03.GarageLogic
 {
     public class RegularCar : FuelVehicle
     {
-
-        public eCarColor Color { get; set; }
-        public eDoorsNumber NumberOfDoors { get; set; }
+        private eCarColor m_Color;
+        private eDoorsNumber m_NumberOfDoors;
+        public eCarColor Color { get=>m_Color; set=>m_Color=value; }
+        public eDoorsNumber NumberOfDoors { get=>m_NumberOfDoors; set=>m_NumberOfDoors=value; }
 
         public RegularCar()
             : base(null, null, 0, new List<Wheel>(), null, null, eFuelType.Octan95, 0, 45f)
@@ -19,17 +20,17 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public override void Refuel(float amount, eFuelType fuelType)
+        public override void Refuel(float i_amount, eFuelType i_fuelType)
         {
-            if (fuelType != FuelType)
+            if (i_fuelType != FuelType)
             {
                 throw new ArgumentException("Incorrect fuel type.");
             }
-            if (CurrentFuelAmount + amount > MaxFuelAmount)
+            if (CurrentFuelAmount + i_amount > MaxFuelAmount)
             {
                 throw new ValueOutOfRangeException(0, MaxFuelAmount - CurrentFuelAmount, "Fuel amount exceeds the maximum limit.");
             }
-            CurrentFuelAmount += amount;
+            CurrentFuelAmount += i_amount;
         }
         public override void InflateWheelsToMax()
         {

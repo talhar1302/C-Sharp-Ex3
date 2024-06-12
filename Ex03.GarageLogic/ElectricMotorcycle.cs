@@ -6,8 +6,10 @@ namespace Ex03.GarageLogic
 {
     public class ElectricMotorcycle : ElectricVehicle
     {
-        public eLicenseType LicenseType { get; set; }
-        public int EngineVolume { get; set; }
+        private eLicenseType m_LicenseType;
+        private int m_EngineVolume;
+        public eLicenseType LicenseType { get=>m_LicenseType; set=>m_LicenseType=value; }
+        public int EngineVolume { get => m_EngineVolume; set => m_EngineVolume = value; }
 
         public ElectricMotorcycle()
             : base(null, null, 0, new List<Wheel>(), null, null, 0, 2.5f)
@@ -17,13 +19,13 @@ namespace Ex03.GarageLogic
                 Wheels.Add(new Wheel("", 0, 33));
             }
         }
-        public override void ChargeBattery(float hours)
+        public override void ChargeBattery(float i_hours)
         {
-            if (BatteryTimeRemaining + hours > MaxBatteryTime)
+            if (BatteryTimeRemaining + i_hours > MaxBatteryTime)
             {
                 throw new ValueOutOfRangeException(0, MaxBatteryTime - BatteryTimeRemaining, "Battery time exceeds the maximum limit.");
             }
-            BatteryTimeRemaining += hours;
+            BatteryTimeRemaining += i_hours;
         }
         public override void InflateWheelsToMax()
         {

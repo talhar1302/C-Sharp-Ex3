@@ -6,8 +6,10 @@ namespace Ex03.GarageLogic
 {
     public class RegularMotorcycle : FuelVehicle
     {
-        public eLicenseType LicenseType { get; set; }
-        public int EngineVolume { get; set; }
+        private eLicenseType m_LicenseType;
+        private int m_EngineVolume;
+        public eLicenseType LicenseType { get=>m_LicenseType; set=>m_LicenseType=value; }
+        public int EngineVolume { get=>m_EngineVolume; set=>m_EngineVolume=value; }
 
         public RegularMotorcycle()
             : base(null, null, 0, new List<Wheel>(), null, null, eFuelType.Octan98, 0, 5.5f)
@@ -17,17 +19,17 @@ namespace Ex03.GarageLogic
                 Wheels.Add(new Wheel("", 0, 33));
             }
         }
-        public override void Refuel(float amount, eFuelType fuelType)
+        public override void Refuel(float i_amount, eFuelType i_fuelType)
         {
-            if (fuelType != FuelType)
+            if (i_fuelType != FuelType)
             {
                 throw new ArgumentException("Incorrect fuel type.");
             }
-            if (CurrentFuelAmount + amount > MaxFuelAmount)
+            if (CurrentFuelAmount + i_amount > MaxFuelAmount)
             {
                 throw new ValueOutOfRangeException(0, MaxFuelAmount - CurrentFuelAmount, "Fuel amount exceeds the maximum limit.");
             }
-            CurrentFuelAmount += amount;
+            CurrentFuelAmount += i_amount;
         }
         public override void InflateWheelsToMax()
         {

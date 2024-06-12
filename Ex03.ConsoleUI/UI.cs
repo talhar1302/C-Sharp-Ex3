@@ -74,9 +74,9 @@ namespace Ex03.ConsoleUI
             menu.AppendLine("8. Exit");
             return menu.ToString();
         }
-        private void DisplayMessage(string message)
+        private void DisplayMessage(string i_message)
         {
-            Console.WriteLine(message);
+            Console.WriteLine(i_message);
             Console.WriteLine("Press any key to continue...\n");
             Console.ReadKey(true);
         }
@@ -224,31 +224,31 @@ namespace Ex03.ConsoleUI
             }
         }
 
-        private string GetInput(string prompt)
+        private string GetInput(string i_prompt)
         {
-            Console.Write(prompt + " ");
+            Console.Write(i_prompt + " ");
             return Console.ReadLine();
         }
 
-        private string GetValidInput(string prompt, Func<string, bool> validateFunc, string errorMessage)
+        private string GetValidInput(string i_prompt, Func<string, bool> i_validateFunc, string i_errorMessage)
         {
             string input;
             do
             {
-                input = GetInput(prompt);
-                if (validateFunc(input))
+                input = GetInput(i_prompt);
+                if (i_validateFunc(input))
                 {
                     break;
                 }
-                DisplayMessage(errorMessage);
+                DisplayMessage(i_errorMessage);
             } while (true);
 
             return input;
         }
 
-        private T GetValidEnumInput<T>(string prompt) where T : struct, Enum
+        private T GetValidEnumInput<T>(string i_prompt) where T : struct, Enum
         {
-            Console.WriteLine(prompt);
+            Console.WriteLine(i_prompt);
             foreach (var value in Enum.GetValues(typeof(T)))
             {
                 Console.WriteLine($"{(int)value}. {value}");
@@ -273,11 +273,11 @@ namespace Ex03.ConsoleUI
             return GetValidEnumInput<eVehicleType>("Select vehicle type:");
         }
 
-        private void SetWheelsDetails(Vehicle newVehicle)
+        private void SetWheelsDetails(Vehicle i_newVehicle)
         {
             string manufacturerName = GetValidInput("Enter manufacturer name for wheels:", InputValidator.ValidateLettersOnly, "Invalid manufacturer name. Must consist of only letters");
             float currentAirPressure = float.Parse(GetInput("Enter current air pressure for wheels:"));
-            float maxAirPressure = newVehicle.Wheels[0].MaxAirPressure;
+            float maxAirPressure = i_newVehicle.Wheels[0].MaxAirPressure;
 
             while (!InputValidator.ValidateInRange(currentAirPressure, maxAirPressure))
             {
@@ -285,16 +285,16 @@ namespace Ex03.ConsoleUI
                 currentAirPressure = float.Parse(GetInput("Enter current air pressure for wheels:"));
             }
 
-            foreach (var wheel in newVehicle.Wheels)
+            foreach (var wheel in i_newVehicle.Wheels)
             {
                 wheel.ManufacturerName = manufacturerName;
                 wheel.CurrentAirPressure = currentAirPressure;
             }
         }
 
-        private void SetSpecificVehicleDetails(Vehicle newVehicle)
+        private void SetSpecificVehicleDetails(Vehicle i_newVehicle)
         {
-            switch (newVehicle)
+            switch (i_newVehicle)
             {
                 case FuelVehicle fuelVehicle:
                     SetFuelVehicleDetails(fuelVehicle);
@@ -303,7 +303,7 @@ namespace Ex03.ConsoleUI
                     SetElectricVehicleDetails(electricVehicle);
                     break;
             }
-            switch (newVehicle)
+            switch (i_newVehicle)
             {
                 case RegularMotorcycle motorcycle:
                     SetRegularMotorcycleDetails(motorcycle);
@@ -323,10 +323,10 @@ namespace Ex03.ConsoleUI
             }
         }
 
-        private void SetFuelVehicleDetails(FuelVehicle fuelVehicle)
+        private void SetFuelVehicleDetails(FuelVehicle i_fuelVehicle)
         {
             float currentFuelAmount = float.Parse(GetInput("Enter fuel amount:"));
-            float maxFuelAmount = fuelVehicle.MaxFuelAmount;
+            float maxFuelAmount = i_fuelVehicle.MaxFuelAmount;
 
             while (!InputValidator.ValidateInRange(currentFuelAmount, maxFuelAmount))
             {
@@ -334,13 +334,13 @@ namespace Ex03.ConsoleUI
                 currentFuelAmount = float.Parse(GetInput("Enter fuel amount:"));
             }
 
-            fuelVehicle.CurrentFuelAmount = currentFuelAmount;
+            i_fuelVehicle.CurrentFuelAmount = currentFuelAmount;
         }
 
-        private void SetElectricVehicleDetails(ElectricVehicle electricVehicle)
+        private void SetElectricVehicleDetails(ElectricVehicle i_electricVehicle)
         {
             float batteryTimeRemaining = float.Parse(GetValidInput("Enter remaining battery time(in hours):", InputValidator.ValidateFloatNumber, "Invalid remaining battery time. Must be a float number."));
-            float maxBatteryTime = electricVehicle.MaxBatteryTime;
+            float maxBatteryTime = i_electricVehicle.MaxBatteryTime;
 
             while (!InputValidator.ValidateInRange(batteryTimeRemaining, maxBatteryTime))
             {
@@ -348,55 +348,55 @@ namespace Ex03.ConsoleUI
                 batteryTimeRemaining = float.Parse(GetInput("Enter remaining battery time:"));
             }
 
-            electricVehicle.BatteryTimeRemaining = batteryTimeRemaining;
+            i_electricVehicle.BatteryTimeRemaining = batteryTimeRemaining;
         }
 
-        private void SetRegularMotorcycleDetails(RegularMotorcycle motorcycle)
+        private void SetRegularMotorcycleDetails(RegularMotorcycle i_motorcycle)
         {
-            motorcycle.EngineVolume = int.Parse(GetValidInput("Enter engine volume:", InputValidator.ValidateIntegerNumber, "Invalid engine volume. Must be an integer number."));
-            motorcycle.LicenseType = GetValidEnumInput<eLicenseType>("Select license type:");
+            i_motorcycle.EngineVolume = int.Parse(GetValidInput("Enter engine volume:", InputValidator.ValidateIntegerNumber, "Invalid engine volume. Must be an integer number."));
+            i_motorcycle.LicenseType = GetValidEnumInput<eLicenseType>("Select license type:");
         }
 
-        private void SetElectricMotorcycleDetails(ElectricMotorcycle motorcycle)
+        private void SetElectricMotorcycleDetails(ElectricMotorcycle i_motorcycle)
         {
-            motorcycle.EngineVolume = int.Parse(GetValidInput("Enter engine volume:", InputValidator.ValidateIntegerNumber, "Invalid engine volume. Must be an integer number."));
-            motorcycle.LicenseType = GetValidEnumInput<eLicenseType>("Select license type:");
+            i_motorcycle.EngineVolume = int.Parse(GetValidInput("Enter engine volume:", InputValidator.ValidateIntegerNumber, "Invalid engine volume. Must be an integer number."));
+            i_motorcycle.LicenseType = GetValidEnumInput<eLicenseType>("Select license type:");
         }
 
-        private void SetRegularCarDetails(RegularCar car)
+        private void SetRegularCarDetails(RegularCar i_car)
         {
-            car.Color = GetValidEnumInput<eCarColor>("Select car color:");
-            car.NumberOfDoors = GetValidEnumInput<eDoorsNumber>("Select number of doors:");
+            i_car.Color = GetValidEnumInput<eCarColor>("Select car color:");
+            i_car.NumberOfDoors = GetValidEnumInput<eDoorsNumber>("Select number of doors:");
         }
 
-        private void SetElectricCarDetails(ElectricCar car)
+        private void SetElectricCarDetails(ElectricCar i_car)
         {
-            car.Color = GetValidEnumInput<eCarColor>("Select car color:");
-            car.NumberOfDoors = GetValidEnumInput<eDoorsNumber>("Select number of doors:");
+            i_car.Color = GetValidEnumInput<eCarColor>("Select car color:");
+            i_car.NumberOfDoors = GetValidEnumInput<eDoorsNumber>("Select number of doors:");
         }
 
-        private void SetTruckDetails(Truck truck)
+        private void SetTruckDetails(Truck i_truck)
         {
-            truck.IsTransportsHazardousMaterials = GetValidInput("Is carrying hazardous materials? (yes/no):", InputValidator.ValidateYesNo, "Invalid input.").ToLower() == "yes";
-            truck.CargoVolume = float.Parse(GetValidInput("Enter cargo volume:", InputValidator.ValidateFloatNumber, "Invalid cargo volume. Must be a float number."));
+            i_truck.IsTransportsHazardousMaterials = GetValidInput("Is carrying hazardous materials? (yes/no):", InputValidator.ValidateYesNo, "Invalid input.").ToLower() == "yes";
+            i_truck.CargoVolume = float.Parse(GetValidInput("Enter cargo volume:", InputValidator.ValidateFloatNumber, "Invalid cargo volume. Must be a float number."));
         }
 
-        private string GetVehicleDetails(Vehicle vehicle)
+        private string GetVehicleDetails(Vehicle i_vehicle)
         {
             StringBuilder details = new StringBuilder();
 
-            details.AppendLine($"License Number: {vehicle.LicenseNumber}");
-            details.AppendLine($"Model Name: {vehicle.ModelName}");
-            details.AppendLine($"Owner Name: {vehicle.OwnerName}");
-            details.AppendLine($"Owner Phone: {vehicle.OwnerPhone}");
-            details.AppendLine($"Vehicle Status: {vehicle.Status}");
+            details.AppendLine($"License Number: {i_vehicle.LicenseNumber}");
+            details.AppendLine($"Model Name: {i_vehicle.ModelName}");
+            details.AppendLine($"Owner Name: {i_vehicle.OwnerName}");
+            details.AppendLine($"Owner Phone: {i_vehicle.OwnerPhone}");
+            details.AppendLine($"Vehicle Status: {i_vehicle.Status}");
 
-            foreach (var wheel in vehicle.Wheels)
+            foreach (var wheel in i_vehicle.Wheels)
             {
                 details.AppendLine($"Wheel Manufacturer: {wheel.ManufacturerName}, Current Air Pressure: {wheel.CurrentAirPressure}, Max Air Pressure: {wheel.MaxAirPressure}");
             }
 
-            switch (vehicle)
+            switch (i_vehicle)
             {
                 case FuelVehicle fuelVehicle:
                     details.AppendLine($"Fuel Type: {fuelVehicle.FuelType}, Current Fuel Amount: {fuelVehicle.CurrentFuelAmount}, Max Fuel Amount: {fuelVehicle.MaxFuelAmount}");
@@ -405,7 +405,7 @@ namespace Ex03.ConsoleUI
                     details.AppendLine($"Battery Time Remaining: {electricVehicle.BatteryTimeRemaining}, Max Battery Time: {electricVehicle.MaxBatteryTime}");
                     break;
             }
-            switch (vehicle)
+            switch (i_vehicle)
             {
                 case RegularMotorcycle regularMotorcycle:
                     details.AppendLine($"License Type: {regularMotorcycle.LicenseType}\nEngine Volume: {regularMotorcycle.EngineVolume}");
