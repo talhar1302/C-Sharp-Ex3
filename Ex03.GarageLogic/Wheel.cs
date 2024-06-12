@@ -6,7 +6,7 @@ namespace Ex03.GarageLogic
 {
     public class Wheel
     {
-        private  string m_ManufacturerName;
+        private string m_ManufacturerName;
         private float m_CurrentAirPressure;
         private readonly float r_maxAirPressure;
         public string ManufacturerName { get => m_ManufacturerName; set => m_ManufacturerName = value; }
@@ -27,6 +27,11 @@ namespace Ex03.GarageLogic
                 throw new ValueOutOfRangeException(0, MaxAirPressure - CurrentAirPressure, "Air pressure exceeds the maximum limit.");
             }
             CurrentAirPressure += i_Amount;
+        }
+
+        public override string ToString()
+        {
+            return ($"Wheel Manufacturer: {m_ManufacturerName}, Current Air Pressure: {m_CurrentAirPressure}, Max Air Pressure: {r_maxAirPressure}");
         }
     }
 

@@ -7,11 +7,11 @@ namespace Ex03.GarageLogic
     {
         private static readonly Dictionary<eVehicleType, Func<Vehicle>> VehicleCreators = new Dictionary<eVehicleType, Func<Vehicle>>
         {
-            { eVehicleType.RegularMotorcycle, () => new RegularMotorcycle() },
+            { eVehicleType.FuelMotorcycle, () => new FuelMotorcycle() },
             { eVehicleType.ElectricMotorcycle, () => new ElectricMotorcycle() },
-            { eVehicleType.RegularCar, () => new RegularCar() },
+            { eVehicleType.FuelCar, () => new FuelCar() },
             { eVehicleType.ElectricCar, () => new ElectricCar() },
-            { eVehicleType.Truck, () => new Truck() }
+            { eVehicleType.FuelTruck, () => new FuelTruck() }
         };
 
         public static Vehicle CreateVehicle(eVehicleType i_VehicleType)

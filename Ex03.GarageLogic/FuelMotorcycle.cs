@@ -5,33 +5,38 @@ using System.Text;
 
 namespace Ex03.GarageLogic
 {
-    public class ElectricMotorcycle : ElectricVehicle
+    public class FuelMotorcycle : FuelVehicle
     {
         private const float k_WheelsMinAirPressure = 0f;
         private const float k_WheelsMaxAirPressure = 33f;
-        private const float k_ValueOfMinBatteryTimeRemaining = 0;
-        private const float k_ValueOfMaxBatteryTimeRemaining = 2.5f;
+        private const float k_ValueOfMinFuelAmount = 0;
+        private const float k_ValueOfMaxFuelAmount = 5.5f;
         private const int k_NumberOfWheels = 2;
+        private const eFuelType k_ValueOfFuelType = eFuelType.Octan98;
         private eLicenseType m_LicenseType;
         private int m_EngineVolume;
         public eLicenseType LicenseType { get=>m_LicenseType; set=>m_LicenseType=value; }
-        public int EngineVolume { get => m_EngineVolume; set => m_EngineVolume = value; }
+        public int EngineVolume { get=>m_EngineVolume; set=>m_EngineVolume=value; }
 
-        public ElectricMotorcycle()
-            : base(k_ValueOfMinBatteryTimeRemaining, k_ValueOfMaxBatteryTimeRemaining)
+        public FuelMotorcycle()
+            : base(k_ValueOfFuelType, k_ValueOfMinFuelAmount, k_ValueOfMaxFuelAmount)
         {
             for (int i = 0; i < k_NumberOfWheels; i++)
             {
                 Wheels.Add(new Wheel("", k_WheelsMinAirPressure, k_WheelsMaxAirPressure));
             }
         }
-        public override void ChargeBattery(float i_Hours)
+        public override void Refuel(float i_Amount, eFuelType i_FuelType)
         {
-            if (BatteryTimeRemaining + i_Hours > MaxBatteryTime)
+            if (i_FuelType != FuelType)
             {
-                throw new ValueOutOfRangeException(0, MaxBatteryTime - BatteryTimeRemaining, "Battery time exceeds the maximum limit.");
+                throw new ArgumentException("Incorrect fuel type.");
             }
-            BatteryTimeRemaining += i_Hours;
+            if (CurrentFuelAmount + i_Amount > MaxFuelAmount)
+            {
+                throw new ValueOutOfRangeException(0, MaxFuelAmount - CurrentFuelAmount, "Fuel amount exceeds the maximum limit.");
+            }
+            CurrentFuelAmount += i_Amount;
         }
 
         public override List<FieldDescriptor> GetFieldDescriptors()
@@ -45,18 +50,18 @@ namespace Ex03.GarageLogic
             {
                 vehicle.WheelsAirPressure = float.Parse(value.ToString());
             }));
-            fieldDescriptors.Add(new FieldDescriptor("BatteryTimeRemaining", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_ValueOfMaxBatteryTimeRemaining)));
-            new FieldDescriptor("EngineVolume", typeof(float), InputValidator.ValidatePositiveFloat);
-            new FieldDescriptor("LicenseType", typeof(eLicenseType), InputValidator.ValidateEnum<eLicenseType>);
+            fieldDescriptors.Add(new FieldDescriptor("CurrentFuelAmount", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_ValueOfMaxFuelAmount)));
+            fieldDescriptors.Add(new FieldDescriptor("Enginevolume", typeof(float), InputValidator.ValidatePositiveFloat));
+            fieldDescriptors.Add(new FieldDescriptor("Licensetype", typeof(eLicenseType), InputValidator.ValidateEnum<eLicenseType>));
             // Add other fields as necessary
             return fieldDescriptors;
         }
         public override string GetDetails()
         {
             StringBuilder details = new StringBuilder();
-            details.AppendLine("Vehicle Type: Electric Motorcycle");
+            details.AppendLine("Vehicle Type: Fuel Motorcycle");
             details.Append(base.GetDetails());
-            details.AppendLine($"License Type: {m_LicenseType}\nEngine Volume: {m_EngineVolume}");
+            details.AppendLine($"License Type: {m_LicenseType}\nEngine Volume: {m_EngineVolume}");           
             return details.ToString();
         }
         public override void InflateWheelsToMax()

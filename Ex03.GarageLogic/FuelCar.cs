@@ -5,33 +5,39 @@ using System.Text;
 
 namespace Ex03.GarageLogic
 {
-    public class ElectricCar : ElectricVehicle
+    public class FuelCar : FuelVehicle
     {
         private const float k_WheelsMinAirPressure = 0f;
         private const float k_WheelsMaxAirPressure = 31f;
-        private const float k_ValueOfMinBatteryTimeRemaining = 0;
-        private const float k_ValueOfMaxBatteryTimeRemaining = 3.5f;
+        private const float k_ValueOfMinFuelAmount = 0;
+        private const float k_ValueOfMaxFuelAmount = 45f;
         private const int k_NumberOfWheels = 5;
-        private eCarColor m_color;
+        private const eFuelType k_ValueOfFuelType = eFuelType.Octan95;
+        private eCarColor m_Color;
         private eDoorsNumber m_NumberOfDoors;
-        public eCarColor Color { get => m_color; set => m_color = value; }
+        public eCarColor Color { get => m_Color; set => m_Color = value; }
         public eDoorsNumber NumberOfDoors { get => m_NumberOfDoors; set => m_NumberOfDoors = value; }
 
-        public ElectricCar()
-            : base(k_ValueOfMinBatteryTimeRemaining, k_ValueOfMaxBatteryTimeRemaining)
+        public FuelCar()
+            : base(k_ValueOfFuelType, k_ValueOfMinFuelAmount, k_ValueOfMaxFuelAmount)
         {
             for (int i = 0; i < k_NumberOfWheels; i++)
             {
                 Wheels.Add(new Wheel("", k_WheelsMinAirPressure, k_WheelsMaxAirPressure));
             }
         }
-        public override void ChargeBattery(float i_Hours)
+      
+        public override void Refuel(float i_Amount, eFuelType i_FuelType)
         {
-            if (BatteryTimeRemaining + i_Hours > MaxBatteryTime)
+            if (i_FuelType != FuelType)
             {
-                throw new ValueOutOfRangeException(0, MaxBatteryTime - BatteryTimeRemaining, "Battery time exceeds the maximum limit.");
+                throw new ArgumentException("Incorrect fuel type.");
             }
-            BatteryTimeRemaining += i_Hours;
+            if (CurrentFuelAmount + i_Amount > MaxFuelAmount)
+            {
+                throw new ValueOutOfRangeException(0, MaxFuelAmount - CurrentFuelAmount, "Fuel amount exceeds the maximum limit.");
+            }
+            CurrentFuelAmount += i_Amount;
         }
 
         public override List<FieldDescriptor> GetFieldDescriptors()
@@ -44,8 +50,8 @@ namespace Ex03.GarageLogic
             fieldDescriptors.Add(new FieldDescriptor("WheelsAirPressure", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_WheelsMaxAirPressure), (vehicle, value) =>
             {
                 vehicle.WheelsAirPressure = float.Parse(value.ToString());
-            }));
-            fieldDescriptors.Add(new FieldDescriptor("BatteryTimeRemaining", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_ValueOfMaxBatteryTimeRemaining)));
+            }));           
+            fieldDescriptors.Add(new FieldDescriptor("CurrentFuelAmount", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_ValueOfMaxFuelAmount)));
             fieldDescriptors.Add(new FieldDescriptor("Color", typeof(eCarColor), InputValidator.ValidateEnum<eCarColor>));
             fieldDescriptors.Add(new FieldDescriptor("NumberOfDoors", typeof(eDoorsNumber), InputValidator.ValidateEnum<eDoorsNumber>));
             // Add other fields as necessary
@@ -55,9 +61,9 @@ namespace Ex03.GarageLogic
         public override string GetDetails()
         {
             StringBuilder details = new StringBuilder();
-            details.AppendLine("Vehicle Type: Electric Car");
-            details.Append(base.GetDetails());
-            details.AppendLine($"Car Color: {m_color}\nNumber of Doors: {m_NumberOfDoors}");
+            details.AppendLine("Vehicle Type: Fuel Car");
+            details.Append(base.GetDetails());;
+            details.AppendLine($"Car Color: {m_Color}\nNumber of Doors: {m_NumberOfDoors}");
             return details.ToString();
         }
         public override void InflateWheelsToMax()
