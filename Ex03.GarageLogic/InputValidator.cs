@@ -1,29 +1,37 @@
 ﻿using System.Linq;
 using System;
+using Ex03.GarageLogic;
 
 public static class InputValidator
 {
-    public static bool ValidateLicenseNumber(string i_licenseNumber)
+    public static bool ValidateLicenseNumber(string i_LicenseNumber)
     {
-        return !string.IsNullOrEmpty(i_licenseNumber) && i_licenseNumber.Length <= 8;
+        bool value= !string.IsNullOrEmpty(i_LicenseNumber) && i_LicenseNumber.Length <= 8;
+        if(!value)
+        {
+            throw new FormatException("license number has to be between 1-8 charcters");
+        }
+        return value;
     }
 
-    public static bool ValidateLettersOnly(string i_input)
+    public static bool ValidateLettersOnly(string i_Input)
     {
         bool valid = true;
 
-        if (string.IsNullOrEmpty(i_input))
+        if (string.IsNullOrEmpty(i_Input))
         {
             valid = false;
+            throw new FormatException("invalid choice. field cannot be empty");
         }
         else
         {
-            foreach (char c in i_input)
+            foreach (char c in i_Input)
             {
                 if (!char.IsLetter(c))
                 {
                     valid = false;
-                    break;
+                    throw new FormatException("invalid choice. field can contain letters only");
+                    //break;
                 }
             }
         }
@@ -31,43 +39,53 @@ public static class InputValidator
         return valid;
     }
 
-    public static bool ValidatePhoneNumber(string i_input)
+    public static bool ValidatePhoneNumber(string i_Input)
     {
-        return i_input.All(char.IsDigit) && i_input.Length == 10;
+        bool value= i_Input.All(char.IsDigit) && i_Input.Length == 10;
+        if (!value)
+        {
+            throw new FormatException("phone number invalid. phone number has to be 10 numbers long");
+        }
+        return value;
     }
 
-    public static bool ValidateEnum<T>(string i_input) where T : struct, Enum
+    public static bool ValidateEnum<T>(string i_Input) where T : struct, Enum
     {
         bool isValid = false;
 
         // Try parsing the input as an enum string value
-        isValid = Enum.TryParse<T>(i_input, true, out _);
+        isValid = Enum.TryParse<T>(i_Input, true, out _);
 
         if (!isValid)
         {
             // If parsing as a string failed, try parsing as an integer
-            isValid = int.TryParse(i_input, out int intValue) && Enum.IsDefined(typeof(T), intValue);
+            isValid = int.TryParse(i_Input, out int intValue) && Enum.IsDefined(typeof(T), intValue);
         }
 
         return isValid;
     }
 
-    public static bool ValidateYesNo(string i_input)
+    public static bool ValidateYesNo(string i_Input)
     {
-        return i_input.ToLower() == "yes" || i_input.ToLower() == "no";
+        return i_Input.ToLower() == "yes" || i_Input.ToLower() == "no";
     }
 
-    public static bool ValidateTrueFalse(string i_input)
+    public static bool ValidateTrueFalse(string i_Input)
     {
-        return i_input.ToLower() == "true" || i_input.ToLower() == "false";
+        return i_Input.ToLower() == "true" || i_Input.ToLower() == "false";
     }
 
-    public static bool ValidatePositiveFloat(string i_input)
+    public static bool ValidatePositiveFloat(string i_Input)
     {
-        return float.TryParse(i_input, out float result) && result > 0;
+        return float.TryParse(i_Input, out float result) && result > 0;
     }
-    public static bool ValidatePositiveFloatInRange(string i_input, float i_MaxValue)
+    public static bool ValidatePositiveFloatInRange(string i_Input, float i_MaxValue)
     {
-         return float.TryParse(i_input, out float result) && result > 0 && result <= i_MaxValue;
+        bool value= float.TryParse(i_Input, out float result) && result > 0 && result <= i_MaxValue;
+        if (!value)
+        {
+            throw new ValueOutOfRangeException(0, i_MaxValue, "Fuel amount exceeds the maximum limit.");
+        }
+        return value;
     }
 }

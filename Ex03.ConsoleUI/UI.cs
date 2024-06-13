@@ -92,7 +92,7 @@ namespace Ex03.ConsoleUI
                 return;
             }
 
-            eVehicleType selectedType = SelectVehicleType();
+            eVehicleType selectedType = GetValidEnumInput<eVehicleType>("Select vehicle type:");
             Vehicle newVehicle = VehicleBuilder.CreateVehicle(selectedType);
             newVehicle.LicenseNumber = licenseNumber;
 
@@ -231,28 +231,43 @@ namespace Ex03.ConsoleUI
             }
         }
 
-        private string GetInput(string i_prompt)
+        private string GetInput(string i_Prompt)
         {
-            Console.Write(i_prompt + " ");
+            Console.Write(i_Prompt + " ");
             return Console.ReadLine();
         }
 
-        private string GetValidInput(string i_prompt, Func<string, bool> i_validateFunc, string i_errorMessage)
+        private string GetValidInput(string i_Prompt, Func<string, bool> i_ValidateFunc, string i_ErrorMessage)
         {
-            string input = GetInput(i_prompt);
+            string input = GetInput(i_Prompt);
 
-            while (!i_validateFunc(input))
+            while (true)
             {
-                DisplayMessage(i_errorMessage);
-                input = GetInput(i_prompt);
+                try
+                {
+                    if (i_ValidateFunc(input))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        DisplayMessage(i_ErrorMessage);
+                    }
+                }
+                catch (FormatException ex)
+                {
+                    DisplayMessage(ex.Message);
+                }
+
+                input = GetInput(i_Prompt);
             }
 
             return input;
         }
 
-        private T GetValidEnumInput<T>(string i_prompt) where T : struct, Enum
+        private T GetValidEnumInput<T>(string i_Prompt) where T : struct, Enum
         {
-            Console.WriteLine(i_prompt);
+            Console.WriteLine(i_Prompt);
 
             foreach (T value in Enum.GetValues(typeof(T)))
             {
@@ -260,32 +275,40 @@ namespace Ex03.ConsoleUI
             }
 
             string input = GetInput("Enter choice:");
-
-            if (int.TryParse(input, out int choice) && Enum.IsDefined(typeof(T), choice))
+            try
             {
-                return (T)(object)choice;
+                if (int.TryParse(input, out int choice) && Enum.IsDefined(typeof(T), choice))
+                {
+                    return (T)(object)choice;
+                }
+                else
+                {
+                    throw new FormatException("Invalid choice.");
+                }
             }
-
-            DisplayMessage("Invalid choice.");
-            return GetValidEnumInput<T>(i_prompt);
+            catch (FormatException ex)
+            {
+                DisplayMessage(ex.Message);
+                return GetValidEnumInput<T>(i_Prompt);
+            }
         }
 
-        private string GetValidEnumInput(string prompt, Type enumType)
+        private string GetValidEnumInput(string i_Prompt, Type i_EnumType)
         {
-            Console.WriteLine(prompt);
-            foreach (var value in Enum.GetValues(enumType))
+            Console.WriteLine(i_Prompt);
+            foreach (var value in Enum.GetValues(i_EnumType))
             {
                 Console.WriteLine($"{Convert.ToInt32(value)}. {value}");
             }
 
             string input = GetInput("Enter choice:");
-            if (int.TryParse(input, out int choice) && Enum.IsDefined(enumType, choice))
+            if (int.TryParse(input, out int choice) && Enum.IsDefined(i_EnumType, choice))
             {
                 return choice.ToString();
             }
 
             DisplayMessage("Invalid choice.");
-            return GetValidEnumInput(prompt, enumType);
+            return GetValidEnumInput(i_Prompt, i_EnumType);
         }
 
         private eVehicleType SelectVehicleType()
