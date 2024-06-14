@@ -105,7 +105,7 @@ public static class InputValidator
             throw new FormatException("Invalid input. Must be a boolean(true/false).");
         }
 
-        return result;
+        return true;
     }
 
     public static bool ValidatePositiveInt(string i_Input)
