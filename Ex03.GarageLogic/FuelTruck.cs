@@ -42,16 +42,16 @@ namespace Ex03.GarageLogic
         public override List<FieldDescriptor> GetFieldDescriptors()
         {
             List<FieldDescriptor> fieldDescriptors = base.GetFieldDescriptors();
-            fieldDescriptors.Add(new FieldDescriptor("WheelManufacturerName", typeof(string), InputValidator.ValidateLettersOnly, (vehicle, value) =>
+            fieldDescriptors.Add(new FieldDescriptor("WheelsManufacturerName", typeof(string), InputValidator.ValidateLettersOnly, (vehicle, value) =>
             {
-                vehicle.WheelManufacturerName = value.ToString();
+                vehicle.WheelsManufacturerName = value.ToString();
             }));
             fieldDescriptors.Add(new FieldDescriptor("WheelsAirPressure", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_WheelsMaxAirPressure), (vehicle, value) =>
             {
                 vehicle.WheelsAirPressure = float.Parse(value.ToString());
             }));
             fieldDescriptors.Add(new FieldDescriptor("CurrentFuelAmount", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_ValueOfMaxFuelAmount)));
-            fieldDescriptors.Add(new FieldDescriptor("IsTransportsHazardousMaterials", typeof(bool), InputValidator.ValidateTrueFalse));
+            fieldDescriptors.Add(new FieldDescriptor("IsTransportsHazardousMaterials", typeof(bool), InputValidator.ValidateBool));
             fieldDescriptors.Add(new FieldDescriptor("CargoVolume", typeof(float), InputValidator.ValidatePositiveFloat));
             // Add other fields as necessary
             return fieldDescriptors;

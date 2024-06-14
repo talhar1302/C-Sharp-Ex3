@@ -22,7 +22,7 @@ namespace Ex03.GarageLogic
         public override string GetDetails()
         {
             StringBuilder details = new StringBuilder(base.GetDetails());
-            details.AppendLine($"Battery Time Remaining: {m_BatteryTimeRemaining}, Max Battery Time: {r_MaxBatteryTime}");
+            details.AppendLine($"Battery Time Remaining: {m_BatteryTimeRemaining} hours, Max Battery Time: {r_MaxBatteryTime} hours");
             return details.ToString();
         }
         public abstract void ChargeBattery(float i_Hours);       

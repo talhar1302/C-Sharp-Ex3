@@ -19,7 +19,7 @@ namespace Ex03.GarageLogic
         public string OwnerName { get => m_OwnerName; set => m_OwnerName = value; }
         public string OwnerPhone { get => m_OwnerPhone; set => m_OwnerPhone = value; }
         public eVehicleStatus Status { get=>m_status; set=>m_status=value; }
-        public string WheelManufacturerName
+        public string WheelsManufacturerName
         {
             get => m_WheelsManufacturerName;
             set
@@ -54,9 +54,7 @@ namespace Ex03.GarageLogic
         {
             return new List<FieldDescriptor>
             {
-            //new FieldDescriptor("License Number", typeof(string), InputValidator.ValidateLicenseNumber),
-            //new FieldDescriptor("Vehicle type", typeof(eVehicleType), InputValidator.ValidateEnum<eVehicleType>),
-            new FieldDescriptor("ModelName", typeof(string), InputValidator.ValidateLettersOnly),
+            new FieldDescriptor("ModelName", typeof(string), InputValidator.ValidateModelName),
             new FieldDescriptor("OwnerName", typeof(string), InputValidator.ValidateLettersOnly),
             new FieldDescriptor("OwnerPhone", typeof(string), InputValidator.ValidatePhoneNumber)          
             // Add other fields as necessary

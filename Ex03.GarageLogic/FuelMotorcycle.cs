@@ -15,8 +15,8 @@ namespace Ex03.GarageLogic
         private const eFuelType k_ValueOfFuelType = eFuelType.Octan98;
         private eLicenseType m_LicenseType;
         private int m_EngineVolume;
-        public eLicenseType LicenseType { get=>m_LicenseType; set=>m_LicenseType=value; }
-        public int EngineVolume { get=>m_EngineVolume; set=>m_EngineVolume=value; }
+        public eLicenseType LicenseType { get => m_LicenseType; set => m_LicenseType=value; }
+        public int EngineVolume { get => m_EngineVolume; set => m_EngineVolume=value; }
 
         public FuelMotorcycle()
             : base(k_ValueOfFuelType, k_ValueOfMinFuelAmount, k_ValueOfMaxFuelAmount)
@@ -42,17 +42,17 @@ namespace Ex03.GarageLogic
         public override List<FieldDescriptor> GetFieldDescriptors()
         {
             List<FieldDescriptor> fieldDescriptors = base.GetFieldDescriptors();
-            fieldDescriptors.Add(new FieldDescriptor("WheelManufacturerName", typeof(string), InputValidator.ValidateLettersOnly, (vehicle, value) =>
+            fieldDescriptors.Add(new FieldDescriptor("WheelsManufacturerName", typeof(string), InputValidator.ValidateLettersOnly, (vehicle, value) =>
             {
-                vehicle.WheelManufacturerName = value.ToString();
+                vehicle.WheelsManufacturerName = value.ToString();
             }));
             fieldDescriptors.Add(new FieldDescriptor("WheelsAirPressure", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_WheelsMaxAirPressure), (vehicle, value) =>
             {
                 vehicle.WheelsAirPressure = float.Parse(value.ToString());
             }));
             fieldDescriptors.Add(new FieldDescriptor("CurrentFuelAmount", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_ValueOfMaxFuelAmount)));
-            fieldDescriptors.Add(new FieldDescriptor("Enginevolume", typeof(float), InputValidator.ValidatePositiveFloat));
-            fieldDescriptors.Add(new FieldDescriptor("Licensetype", typeof(eLicenseType), InputValidator.ValidateEnum<eLicenseType>));
+            fieldDescriptors.Add(new FieldDescriptor("EngineVolume", typeof(int), InputValidator.ValidatePositiveInt));
+            fieldDescriptors.Add(new FieldDescriptor("LicenseType", typeof(eLicenseType), InputValidator.ValidateEnum<eLicenseType>));
             // Add other fields as necessary
             return fieldDescriptors;
         }
@@ -61,7 +61,7 @@ namespace Ex03.GarageLogic
             StringBuilder details = new StringBuilder();
             details.AppendLine("Vehicle Type: Fuel Motorcycle");
             details.Append(base.GetDetails());
-            details.AppendLine($"License Type: {m_LicenseType}\nEngine Volume: {m_EngineVolume}");           
+            details.AppendLine($"License Type: {m_LicenseType}\nEngine Volume: {m_EngineVolume} cm^3");           
             return details.ToString();
         }
         public override void InflateWheelsToMax()
