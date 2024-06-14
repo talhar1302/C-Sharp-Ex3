@@ -12,9 +12,9 @@ namespace Ex03.GarageLogic
         private const float k_ValueOfMinBatteryTimeRemaining = 0;
         private const float k_ValueOfMaxBatteryTimeRemaining = 3.5f;
         private const int k_NumberOfWheels = 5;
-        private eCarColor m_color;
+        private eCarColor m_Color;
         private eDoorsNumber m_NumberOfDoors;
-        public eCarColor Color { get => m_color; set => m_color = value; }
+        public eCarColor Color { get => m_Color; set => m_Color = value; }
         public eDoorsNumber NumberOfDoors { get => m_NumberOfDoors; set => m_NumberOfDoors = value; }
 
         public ElectricCar()
@@ -37,6 +37,7 @@ namespace Ex03.GarageLogic
         public override List<FieldDescriptor> GetFieldDescriptors()
         {
             List<FieldDescriptor> fieldDescriptors = base.GetFieldDescriptors();
+
             fieldDescriptors.Add(new FieldDescriptor("WheelsManufacturerName", typeof(string), InputValidator.ValidateLettersOnly, (vehicle, value) =>
             {
                 vehicle.WheelsManufacturerName = value.ToString();
@@ -48,21 +49,23 @@ namespace Ex03.GarageLogic
             fieldDescriptors.Add(new FieldDescriptor("BatteryTimeRemaining", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_ValueOfMaxBatteryTimeRemaining)));
             fieldDescriptors.Add(new FieldDescriptor("Color", typeof(eCarColor), InputValidator.ValidateEnum<eCarColor>));
             fieldDescriptors.Add(new FieldDescriptor("NumberOfDoors", typeof(eDoorsNumber), InputValidator.ValidateEnum<eDoorsNumber>));
-            // Add other fields as necessary
+
             return fieldDescriptors;
         }
 
         public override string GetDetails()
         {
             StringBuilder details = new StringBuilder();
+
             details.AppendLine("Vehicle Type: Electric Car");
             details.Append(base.GetDetails());
-            details.AppendLine($"Car Color: {m_color}\nNumber of Doors: {m_NumberOfDoors}");
+            details.AppendLine($"Car Color: {m_Color}\nNumber of Doors: {m_NumberOfDoors}");
+
             return details.ToString();
         }
         public override void InflateWheelsToMax()
         {
-            foreach (var wheel in Wheels)
+            foreach (Wheel wheel in Wheels)
             {
                 wheel.Inflate(wheel.MaxAirPressure - wheel.CurrentAirPressure);
             }

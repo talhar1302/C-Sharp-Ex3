@@ -12,6 +12,7 @@ public static class InputValidator
         {
             throw new FormatException("Invalid license number. Must consist of 1-8 charcters.");
         }
+
         return value;
     }
 
@@ -153,6 +154,7 @@ public static class InputValidator
         {
             throw new ValueOutOfRangeException(0, i_MaxValue, $"The input must be between '{0}' and '{i_MaxValue}'.");
         }
+
         return value;
     }
 }

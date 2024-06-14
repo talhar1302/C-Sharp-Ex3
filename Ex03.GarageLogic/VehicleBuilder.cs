@@ -25,7 +25,6 @@ namespace Ex03.GarageLogic
                 throw new ArgumentException("Unsupported vehicle type.");
             }
         }
-
         public static List<eVehicleType> GetSupportedVehicleTypes()
         {
             return new List<eVehicleType>(VehicleCreators.Keys);

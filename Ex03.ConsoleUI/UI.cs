@@ -8,7 +8,7 @@ namespace Ex03.ConsoleUI
 {
     public class UI
     {
-        private Garage garage = new Garage();
+        private Garage m_Garage = new Garage();
         public void Run()
         {
             bool exit = false;
@@ -85,9 +85,9 @@ namespace Ex03.ConsoleUI
             string userInput;
             string licenseNumber = GetValidInput("Enter vehicle license number:", InputValidator.ValidateLicenseNumber, "Invalid license number. Must consist of 1-8 characters");
 
-            if (garage.IsVehicleInGarage(licenseNumber))
+            if (m_Garage.IsVehicleInGarage(licenseNumber))
             {
-                garage.ChangeVehicleStatus(licenseNumber, eVehicleStatus.UnderRepair);
+                m_Garage.ChangeVehicleStatus(licenseNumber, eVehicleStatus.UnderRepair);
                 DisplayMessage("Vehicle is already in the garage. Status set to 'under repair'.");
                 return;
             }
@@ -98,24 +98,25 @@ namespace Ex03.ConsoleUI
             var fieldDescriptors = newVehicle.GetFieldDescriptors();
             foreach (var fieldDescriptor in fieldDescriptors)
             {
+                string formattedFieldName = FormatFieldName(fieldDescriptor.Name);
                 if (fieldDescriptor.FieldType.IsEnum)
                 {
-                    userInput = GetValidEnumInput(fieldDescriptor.Name, fieldDescriptor.FieldType);
+                    userInput = GetValidEnumInput(formattedFieldName, fieldDescriptor.FieldType);
                     newVehicle.GetType().GetProperty(fieldDescriptor.Name).SetValue(newVehicle, Enum.Parse(fieldDescriptor.FieldType, userInput));
                 }
                 else
                 {
-                    userInput = GetValidInput($"Enter {fieldDescriptor.Name}:", fieldDescriptor.ValidationFunc, $"Invalid {fieldDescriptor.Name}. Please try again.");
+                    userInput = GetValidInput($"Enter {formattedFieldName}:", fieldDescriptor.ValidationFunc, $"Invalid {formattedFieldName}. Please try again.");
                     newVehicle.GetType().GetProperty(fieldDescriptor.Name).SetValue(newVehicle, Convert.ChangeType(userInput, fieldDescriptor.FieldType));
                 }
             }
 
-            garage.AddVehicle(newVehicle);
+            m_Garage.AddVehicle(newVehicle);
             DisplayMessage("Vehicle added successfully.");
         }
         private void ShowVehicleList()
         {
-            if (garage.IsGarageEmpty())
+            if (m_Garage.IsGarageEmpty())
             {
                 DisplayMessage("No vehicles in the garage.");
             }
@@ -127,11 +128,11 @@ namespace Ex03.ConsoleUI
                 if (showByStatus.ToLower() == "yes")
                 {
                     eVehicleStatus status = GetValidEnumInput<eVehicleStatus>("status");
-                    licenseNumbers = garage.GetVehicleLicenseNumbers(status);
+                    licenseNumbers = m_Garage.GetVehicleLicenseNumbers(status);
                 }
                 else
                 {
-                    licenseNumbers = garage.GetVehicleLicenseNumbers();
+                    licenseNumbers = m_Garage.GetVehicleLicenseNumbers();
                 }
 
                 if (licenseNumbers.Count == 0)
@@ -157,7 +158,7 @@ namespace Ex03.ConsoleUI
             try
             {
                 eVehicleStatus newStatus = GetValidEnumInput<eVehicleStatus>("status");
-                garage.ChangeVehicleStatus(licenseNumber, newStatus);
+                m_Garage.ChangeVehicleStatus(licenseNumber, newStatus);
                 DisplayMessage("Vehicle status changed successfully.");
             }
             catch (ArgumentException ex)
@@ -172,7 +173,7 @@ namespace Ex03.ConsoleUI
 
             try
             {
-                garage.InflateWheelsToMax(licenseNumber);
+                m_Garage.InflateWheelsToMax(licenseNumber);
                 DisplayMessage("Wheels inflated to max successfully.");
             }
             catch (ArgumentException ex)
@@ -189,7 +190,7 @@ namespace Ex03.ConsoleUI
 
             try
             {
-                garage.RefuelVehicle(licenseNumber, fuelType, amount);
+                m_Garage.RefuelVehicle(licenseNumber, fuelType, amount);
                 DisplayMessage("Vehicle refueled successfully.");
             }
             catch (ArgumentException ex)
@@ -206,7 +207,7 @@ namespace Ex03.ConsoleUI
 
             try
             {
-                garage.ChargeVehicle(licenseNumber, hours);
+                m_Garage.ChargeVehicle(licenseNumber, hours);
                 DisplayMessage("Vehicle charged successfully.");
             }
             catch (ArgumentException ex)
@@ -221,7 +222,7 @@ namespace Ex03.ConsoleUI
 
             try
             {
-                Vehicle vehicle = garage.GetVehicle(licenseNumber);
+                Vehicle vehicle = m_Garage.GetVehicle(licenseNumber);
                 DisplayMessage(vehicle.GetDetails());
             }
             catch (ArgumentException ex)
@@ -232,15 +233,18 @@ namespace Ex03.ConsoleUI
         private string FormatFieldName(string i_FieldName)
         {
             StringBuilder formattedName = new StringBuilder();
+            int length = i_FieldName.Length;
 
-            foreach (char c in i_FieldName)
+            for(int i = 0; i < length - 1; i++)
             {
-                if (char.IsUpper(c) && formattedName.Length > 0)
+                formattedName.Append(i_FieldName[i]);
+                if (char.IsLower(i_FieldName[i]) && char.IsUpper(i_FieldName[i+1]))
                 {
                     formattedName.Append(' ');
                 }
-                formattedName.Append(c);
             }
+
+            formattedName.Append(i_FieldName[length - 1]);
 
             return formattedName.ToString();
         }
@@ -290,11 +294,11 @@ namespace Ex03.ConsoleUI
 
             do
             {
-                Console.WriteLine("Select " + i_Prompt + ":");
+                Console.WriteLine($"Select {FormatFieldName(i_Prompt)}:");
 
                 foreach (var value in Enum.GetValues(i_EnumType))
                 {
-                    Console.WriteLine($"{Convert.ToInt32(value)}. {value}");
+                    Console.WriteLine($"{Convert.ToInt32(value)}. {FormatFieldName(value.ToString())}");
                 }
 
                 string input = GetInput("Enter choice:");

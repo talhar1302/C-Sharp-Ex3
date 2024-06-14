@@ -9,19 +9,20 @@ namespace Ex03.GarageLogic
         private string m_LicenseNumber;
         private List<Wheel> m_Wheels;
         private string m_OwnerName;
-        public string m_OwnerPhone;
-        private eVehicleStatus m_status;
+        private string m_OwnerPhone;
+        private eVehicleStatus m_Status;
         private string m_WheelsManufacturerName;
         private float m_WheelsAirPressure;
         public string ModelName { get => m_ModelName; set => m_ModelName = value; }
         public string LicenseNumber { get => m_LicenseNumber; set => m_LicenseNumber = value; }
-        public List<Wheel> Wheels { get =>m_Wheels; set=>m_Wheels=value; }
+        public List<Wheel> Wheels { get => m_Wheels; set => m_Wheels = value; }
         public string OwnerName { get => m_OwnerName; set => m_OwnerName = value; }
         public string OwnerPhone { get => m_OwnerPhone; set => m_OwnerPhone = value; }
-        public eVehicleStatus Status { get=>m_status; set=>m_status=value; }
+        public eVehicleStatus Status { get => m_Status; set => m_Status = value; }
         public string WheelsManufacturerName
         {
             get => m_WheelsManufacturerName;
+
             set
             {
                 m_WheelsManufacturerName = value;
@@ -34,6 +35,7 @@ namespace Ex03.GarageLogic
         public float WheelsAirPressure
         {
             get => m_WheelsAirPressure;
+
             set
             {
                 m_WheelsAirPressure = value;
@@ -43,13 +45,11 @@ namespace Ex03.GarageLogic
                 }
             }
         }
-
         protected Vehicle()
         {
             Wheels = new List<Wheel>();
-            m_status = eVehicleStatus.UnderRepair;
+            m_Status = eVehicleStatus.UnderRepair;
         }
-
         public virtual List<FieldDescriptor> GetFieldDescriptors()
         {
             return new List<FieldDescriptor>
@@ -57,23 +57,23 @@ namespace Ex03.GarageLogic
             new FieldDescriptor("ModelName", typeof(string), InputValidator.ValidateModelName),
             new FieldDescriptor("OwnerName", typeof(string), InputValidator.ValidateLettersOnly),
             new FieldDescriptor("OwnerPhone", typeof(string), InputValidator.ValidatePhoneNumber)          
-            // Add other fields as necessary
             };
         }
-
         public virtual string GetDetails()
         {
             StringBuilder details = new StringBuilder();
+
             details.AppendLine($"License Number: {m_LicenseNumber}");
             details.AppendLine($"Model Name: {m_ModelName}");
             details.AppendLine($"Owner Name: {m_OwnerName}");
             details.AppendLine($"Owner Phone: {m_OwnerPhone}");
-            details.AppendLine($"Vehicle Status: {m_status}");
+            details.AppendLine($"Vehicle Status: {m_Status}");
             details.AppendLine("Wheels:");
             foreach (Wheel wheel in m_Wheels)
             {
                 details.AppendLine(wheel.ToString());
             }
+
             return details.ToString();
         }
         public abstract void InflateWheelsToMax();

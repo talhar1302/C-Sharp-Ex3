@@ -15,8 +15,8 @@ namespace Ex03.GarageLogic
         private const eFuelType k_ValueOfFuelType = eFuelType.Soler;
         private bool m_IsTransportsHazardousMaterials;
         private float m_CargoVolume;
-        public bool IsTransportsHazardousMaterials { get=> m_IsTransportsHazardousMaterials; set=> m_IsTransportsHazardousMaterials=value; }
-        public float CargoVolume { get=> m_CargoVolume; set=> m_CargoVolume=value; }
+        public bool IsTransportsHazardousMaterials { get => m_IsTransportsHazardousMaterials; set => m_IsTransportsHazardousMaterials = value; }
+        public float CargoVolume { get => m_CargoVolume; set => m_CargoVolume = value; }
 
         public FuelTruck()
             : base(k_ValueOfFuelType, k_ValueOfMinFuelAmount, k_ValueOfMaxFuelAmount)
@@ -36,12 +36,14 @@ namespace Ex03.GarageLogic
             {
                 throw new ValueOutOfRangeException(0, MaxFuelAmount - CurrentFuelAmount, "Fuel amount exceeds the maximum limit.");
             }
+
             CurrentFuelAmount += i_Amount;
         }
 
         public override List<FieldDescriptor> GetFieldDescriptors()
         {
             List<FieldDescriptor> fieldDescriptors = base.GetFieldDescriptors();
+
             fieldDescriptors.Add(new FieldDescriptor("WheelsManufacturerName", typeof(string), InputValidator.ValidateLettersOnly, (vehicle, value) =>
             {
                 vehicle.WheelsManufacturerName = value.ToString();
@@ -53,20 +55,22 @@ namespace Ex03.GarageLogic
             fieldDescriptors.Add(new FieldDescriptor("CurrentFuelAmount", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_ValueOfMaxFuelAmount)));
             fieldDescriptors.Add(new FieldDescriptor("IsTransportsHazardousMaterials", typeof(bool), InputValidator.ValidateBool));
             fieldDescriptors.Add(new FieldDescriptor("CargoVolume", typeof(float), InputValidator.ValidatePositiveFloat));
-            // Add other fields as necessary
+
             return fieldDescriptors;
         }
         public override string GetDetails()
         {
             StringBuilder details = new StringBuilder();
+
             details.AppendLine("Vehicle Type: Fuel Truck");
             details.Append(base.GetDetails());
             details.AppendLine($"Is Carrying Hazardous Materials: {m_IsTransportsHazardousMaterials}\nCargo Volume: {m_CargoVolume}");
+
             return details.ToString();
         }
         public override void InflateWheelsToMax()
         {
-            foreach (var wheel in Wheels)
+            foreach (Wheel wheel in Wheels)
             {
                 wheel.Inflate(wheel.MaxAirPressure - wheel.CurrentAirPressure);
             }

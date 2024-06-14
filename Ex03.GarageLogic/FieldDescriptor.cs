@@ -8,18 +8,18 @@ public class FieldDescriptor
     public Func<string, bool> ValidationFunc { get; set; }
     public Action<Vehicle, object> SetValueAction { get; set; }
 
-    public FieldDescriptor(string name, Type fieldType, Func<string, bool> validationFunc)
+    public FieldDescriptor(string i_Name, Type i_FieldType, Func<string, bool> i_ValidationFunc)
     {
-        Name = name;
-        FieldType = fieldType;
-        ValidationFunc = validationFunc;
+        Name = i_Name;
+        FieldType = i_FieldType;
+        ValidationFunc = i_ValidationFunc;
     }
 
-    public FieldDescriptor(string name, Type fieldType, Func<string, bool> validationFunc, Action<Vehicle, object> setValueAction)
+    public FieldDescriptor(string i_Name, Type i_FieldType, Func<string, bool> i_ValidationFunc, Action<Vehicle, object> i_SetValueAction)
     {
-        Name = name;
-        FieldType = fieldType;
-        ValidationFunc = validationFunc;
-        SetValueAction = setValueAction;
+        Name = i_Name;
+        FieldType = i_FieldType;
+        ValidationFunc = i_ValidationFunc;
+        SetValueAction = i_SetValueAction;
     }
 }

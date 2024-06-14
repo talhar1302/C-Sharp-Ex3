@@ -37,12 +37,14 @@ namespace Ex03.GarageLogic
             {
                 throw new ValueOutOfRangeException(0, MaxFuelAmount - CurrentFuelAmount, "Fuel amount exceeds the maximum limit.");
             }
+
             CurrentFuelAmount += i_Amount;
         }
 
         public override List<FieldDescriptor> GetFieldDescriptors()
         {
             List<FieldDescriptor> fieldDescriptors = base.GetFieldDescriptors();
+
             fieldDescriptors.Add(new FieldDescriptor("WheelsManufacturerName", typeof(string), InputValidator.ValidateLettersOnly, (vehicle, value) =>
             {
                 vehicle.WheelsManufacturerName = value.ToString();
@@ -54,21 +56,23 @@ namespace Ex03.GarageLogic
             fieldDescriptors.Add(new FieldDescriptor("CurrentFuelAmount", typeof(float), input => InputValidator.ValidatePositiveFloatInRange(input, k_ValueOfMaxFuelAmount)));
             fieldDescriptors.Add(new FieldDescriptor("Color", typeof(eCarColor), InputValidator.ValidateEnum<eCarColor>));
             fieldDescriptors.Add(new FieldDescriptor("NumberOfDoors", typeof(eDoorsNumber), InputValidator.ValidateEnum<eDoorsNumber>));
-            // Add other fields as necessary
+
             return fieldDescriptors;
         }
 
         public override string GetDetails()
         {
             StringBuilder details = new StringBuilder();
+
             details.AppendLine("Vehicle Type: Fuel Car");
             details.Append(base.GetDetails());;
             details.AppendLine($"Car Color: {m_Color}\nNumber of Doors: {m_NumberOfDoors}");
+
             return details.ToString();
         }
         public override void InflateWheelsToMax()
         {
-            foreach (var wheel in Wheels)
+            foreach (Wheel wheel in Wheels)
             {
                 wheel.Inflate(wheel.MaxAirPressure - wheel.CurrentAirPressure);
             }
